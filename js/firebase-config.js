@@ -10,13 +10,14 @@ const FIREBASE_DB_ROOT = "smaba_literasi";
 // Anda dapat memasukkan kunci Firebase langsung di sini, atau
 // lebih praktis: tempel langsung melalui tombol "Database: Mode Lokal" di header aplikasi!
 const DEFAULT_FIREBASE_CONFIG = {
-  apiKey: "",
-  authDomain: "",
-  databaseURL: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: ""
+  apiKey: "AIzaSyB2p0aIAsmIE4Zk5e-EI43nhXLx9fJdncU",
+  authDomain: "jurnal-literasi-669f5.firebaseapp.com",
+  databaseURL: "https://jurnal-literasi-669f5-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "jurnal-literasi-669f5",
+  storageBucket: "jurnal-literasi-669f5.firebasestorage.app",
+  messagingSenderId: "339838254926",
+  appId: "1:339838254926:web:a523faf5e5893882cde81f",
+  measurementId: "G-WS007J3CEK"
 };
 
 class FirebaseService {
