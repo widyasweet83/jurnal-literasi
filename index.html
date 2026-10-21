@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIPUS-LIT SMABA | Perpustakaan & Jurnal Literasi Siswa SMAN 1 Batu</title>
+  <meta name="description"
+    content="Aplikasi resmi Gerakan Literasi Sekolah (GLS) dan Perpustakaan Digital SMA Negeri 1 Batu (SMABA). Pencatatan jurnal bacaan harian siswa, validasi guru pembimbing, sirkulasi buku, dan leaderboard literasi.">
+  <link rel="icon" type="image/png" href="assets/logo-sman1batu.png?v=2">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <!-- ================= SITE HEADER ================= -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand-wrapper" onclick="window.app.switchTab('journals')">
+        <img src="assets/logo-sman1batu.png?v=2" alt="Logo SMAN 1 Batu" class="brand-logo-img">
+        <div class="brand-text">
+          <h1>
+            SIPUS-LIT SMABA
+            <span class="brand-badge">GLS Cendekia</span>
+          </h1>
+          <p>SMA Negeri 1 Batu • Gerakan Literasi & Perpustakaan Digital</p>
+        </div>
+      </div>
+
+      <!-- Quick Role Switcher for Interactive Evaluation -->
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div class="role-switcher-box" title="Ganti sudut pandang akun untuk menguji fitur">
+          <button class="role-btn active" data-userid="siswa-1">
+            <span>👨‍🎓</span> Ahmad (Siswa)
+          </button>
+          <button class="role-btn" data-userid="siswa-2">
+            <span>👩‍🎓</span> Siti (Siswa)
+          </button>
+          <button class="role-btn" data-userid="guru-1">
+            <span>👩‍🏫</span> Ibu Widya (Guru)
+          </button>
+          <button class="role-btn" data-userid="admin-1">
+            <span>👩‍💼</span> Ibu Sulis (Pustakawan)
+          </button>
+          <button class="role-btn" data-userid="admin-2">
+            <span>🏛️</span> Ibu Rini (Kepala Perpus)
+          </button>
+        </div>
+
+        <!-- User profile display badge -->
+        <div class="user-profile-badge">
+          <div class="user-avatar-circle" id="headerUserAvatar">👨‍🎓</div>
+          <div class="user-info-text">
+            <div class="name" id="headerUserName">Ahmad Fauzan Pratama</div>
+            <div class="role-tag" id="headerUserRole">XI-MIPA 1 • 480 Poin</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= NAVIGATION PILL BAR ================= -->
+  <nav class="nav-bar-container">
+    <div class="container">
+      <div class="nav-pills">
+        <button class="nav-item-btn active" data-tab="journals" id="navBtnJournals">
+          <span class="nav-icon">📖</span>
+          <span>Jurnal Literasi</span>
+        </button>
+        <button class="nav-item-btn" data-tab="students" id="navBtnStudents">
+          <span class="nav-icon">👥</span>
+          <span>Data Siswa (36 Kelas)</span>
+        </button>
+        <button class="nav-item-btn" data-tab="activities" id="navBtnActivities">
+          <span class="nav-icon">📅</span>
+          <span>Kegiatan Perpustakaan</span>
+        </button>
+        <button class="nav-item-btn" data-tab="gallery" id="navBtnGallery">
+          <span class="nav-icon">📸</span>
+          <span>Galeri Foto & Video</span>
+        </button>
+        <button class="nav-item-btn" data-tab="library" id="navBtnLibrary">
+          <span class="nav-icon">📚</span>
+          <span>Katalog & Peminjaman Buku</span>
+        </button>
+        <button class="nav-item-btn" data-tab="leaderboard" id="navBtnLeaderboard">
+          <span class="nav-icon">🏆</span>
+          <span>Papan Peringkat Literasi</span>
+        </button>
+        <button class="nav-item-btn" data-tab="teacher" id="navBtnTeacher" style="display: none;">
+          <span class="nav-icon">👩‍🏫</span>
+          <span>Validasi Guru / Admin</span>
+          <span class="nav-badge-count" id="teacherNavBadge">2</span>
+        </button>
+        <button class="nav-item-btn" data-tab="admin" id="navBtnAdmin" style="display: none;">
+          <span class="nav-icon">⚙️</span>
+          <span>Kelola Perpustakaan</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ================= MAIN CONTENT CONTAINER ================= -->
+  <main class="container" style="padding-top: 10px; padding-bottom: 60px;">
+
+    <!-- Dynamic Hero Banner per Role -->
+    <div id="heroBannerContainer"></div>
+
+    <!-- Quick Stats for Student (when on journals tab) -->
+    <div class="stats-grid" id="studentStatsRow" style="display: none;"></div>
+
+    <!-- ========================================================
+         TAB 1: JURNAL LITERASI SISWA
+         ======================================================== -->
+    <section class="tab-panel" id="tab-journals">
+      <div class="section-header-box">
+        <h2 class="section-title">
+          <span>📝</span> Catatan Jurnal Literasi
+        </h2>
+        <div class="filter-bar">
+          <input type="text" class="input-search" id="searchJournalInput"
+            placeholder="Cari judul buku, penulis, ringkasan...">
+          <select class="select-filter" id="selectJournalStatus">
+            <option value="all">Semua Status</option>
+            <option value="approved">✓ Disetujui Guru</option>
+            <option value="pending">⏳ Menunggu Validasi</option>
+            <option value="revision">⚠️ Perlu Revisi</option>
+          </select>
+          <button class="btn btn-primary" onclick="JournalModule.openCreateModal()" id="btnNewJournal">
+            ➕ Tulis Jurnal Baru
+          </button>
+        </div>
+      </div>
+
+      <!-- Journal Cards Feed Grid -->
+      <div class="journals-grid" id="journalsGrid"></div>
+    </section>
+
+    <!-- ========================================================
+         TAB: DATA SISWA 36 KELAS (12 X, 12 XI, 12 XII)
+         ======================================================== -->
+    <section class="tab-panel" id="tab-students" style="display: none;">
+      <div class="section-header-box">
+        <div>
+          <h2 class="section-title">
+            <span>👥</span> Direktori Data Siswa 36 Rombel Kelas SMAN 1 Batu
+          </h2>
+          <p style="color: var(--text-muted); font-size: 0.86rem; margin-top: 4px;">
+            12 Kelas X, 12 Kelas XI, dan 12 Kelas XII. Siswa dapat mengisi jurnal literasi langsung tanpa perlu ijin
+            awal.
+          </p>
+        </div>
+        <div class="filter-bar">
+          <input type="text" class="input-search" id="searchStudentInput"
+            placeholder="Cari nama siswa, NISN, atau kelas...">
+          <button class="btn btn-secondary" onclick="StudentsModule.exportStudentsCsv()">
+            📥 Ekspor CSV
+          </button>
+          <button class="btn btn-primary" onclick="StudentsModule.openAddStudentModal()">
+            ➕ Tambah Siswa Baru
+          </button>
+        </div>
+      </div>
+
+      <!-- Grade Filter Tabs: Semua, Tingkat X, Tingkat XI, Tingkat XII -->
+      <div class="grade-tabs-container">
+        <button class="grade-filter-btn active" data-grade="all">🏫 Semua 36 Kelas</button>
+        <button class="grade-filter-btn" data-grade="X">Tingkat X (12 Rombel)</button>
+        <button class="grade-filter-btn" data-grade="XI">Tingkat XI (12 Rombel)</button>
+        <button class="grade-filter-btn" data-grade="XII">Tingkat XII (12 Rombel)</button>
+      </div>
+
+      <!-- 36 Class Selector Pills Container -->
+      <div class="class-pills-scroll" id="classPillsContainer"></div>
+
+      <!-- Selected Class Summary Stats Cards -->
+      <div class="stats-grid" id="classHeaderStats" style="margin-bottom: 24px;"></div>
+
+      <!-- Student Roster Table Card -->
+      <div class="leaderboard-card">
+        <div class="section-header-box" style="margin-bottom: 14px;">
+          <h3 style="font-size: 1.12rem; color: var(--primary-900);">
+            📋 Roster Siswa & Capaian Literasi
+          </h3>
+          <span class="badge-status badge-approved" id="studentListCountBadge">0 Siswa</span>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="leaderboard-table">
+            <thead>
+              <tr>
+                <th style="width: 40px;">No</th>
+                <th>NISN</th>
+                <th>Nama Siswa</th>
+                <th>Kelas</th>
+                <th>Predikat Literasi</th>
+                <th>Aktivitas Jurnal</th>
+                <th>Poin</th>
+                <th style="width: 170px;">Tindakan</th>
+              </tr>
+            </thead>
+            <tbody id="studentsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         TAB: KEGIATAN PERPUSTAKAAN (INTERNAL & EKSTERNAL)
+         ======================================================== -->
+    <section class="tab-panel" id="tab-activities" style="display: none;">
+      <div class="section-header-box">
+        <div>
+          <h2 class="section-title">
+            <span>📅</span> Agenda Kegiatan Perpustakaan SMAN 1 Batu
+          </h2>
+          <p style="color: var(--text-muted); font-size: 0.86rem; margin-top: 4px;">
+            Program pembiasaan literasi, bedah buku, lomba pojok baca 36 kelas, serta kolaborasi eksternal bersama
+            Dispusip & Dinas Pendidikan.
+          </p>
+        </div>
+        <div class="filter-bar">
+          <input type="text" class="input-search" id="searchActivityInput"
+            placeholder="Cari nama kegiatan, narasumber, atau tempat...">
+          <select class="select-filter" id="selectActivityStatus">
+            <option value="all">Semua Status</option>
+            <option value="upcoming">⏳ Akan Datang</option>
+            <option value="ongoing">🔥 Sedang Berlangsung</option>
+            <option value="completed">✓ Selesai Terlaksana</option>
+          </select>
+          <button class="btn btn-secondary" onclick="ActivitiesModule.exportActivitiesCsv()">
+            📥 Ekspor CSV
+          </button>
+          <button class="btn btn-primary" onclick="ActivitiesModule.openAddModal()" id="btnNewActivity">
+            ➕ Tambah Kegiatan Baru
+          </button>
+        </div>
+      </div>
+
+      <!-- Type Filter Tabs: Semua, Kegiatan Internal Sekolah, Kegiatan Eksternal Luar -->
+      <div class="activity-type-tabs">
+        <button class="activity-type-btn active" data-type="all">
+          <span>🌟 Semua Agenda</span>
+          <span class="activity-count-badge" id="actCountAll">0</span>
+        </button>
+        <button class="activity-type-btn" data-type="internal">
+          <span>🏛️ Kegiatan Internal Sekolah</span>
+          <span class="activity-count-badge" id="actCountInternal">0</span>
+        </button>
+        <button class="activity-type-btn" data-type="external">
+          <span>🌍 Kegiatan Eksternal / Dinas</span>
+          <span class="activity-count-badge" id="actCountExternal">0</span>
+        </button>
+      </div>
+
+      <!-- Activities Grid Container -->
+      <div class="activities-grid" id="activitiesGrid"></div>
+    </section>
+
+    <!-- ========================================================
+         TAB: GALERI DOKUMENTASI FOTO & VIDEO (GOOGLE DRIVE SYNC)
+         ======================================================== -->
+    <section class="tab-panel" id="tab-gallery" style="display: none;">
+      <!-- Cloud Drive Official Header Card -->
+      <div class="cloud-drive-banner">
+        <div class="cloud-drive-info">
+          <div class="cloud-drive-icon">☁️</div>
+          <div>
+            <div class="cloud-drive-title">
+              Penyimpanan Cloud Resmi Google Drive Perpustakaan SMAN 1 Batu
+            </div>
+            <div class="cloud-drive-sub">
+              Seluruh berkas foto dokumentasi & video kegiatan literasi tersimpan aman pada Google Drive terpusat.
+            </div>
+            <div class="cloud-drive-account-pill">
+              <span>📧 Akun Drive:</span>
+              <strong>perpustakaan@sman1batu.sch.id</strong>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <a href="https://drive.google.com/drive/u/0/search?q=owner:perpustakaan@sman1batu.sch.id" target="_blank"
+            rel="noopener noreferrer" class="btn btn-secondary"
+            style="background: rgba(255,255,255,0.15); color: #fff; border-color: rgba(255,255,255,0.3);">
+            📂 Buka Google Drive ↗
+          </a>
+          <button class="btn btn-primary" onclick="GalleryModule.openUploadModal()"
+            style="background: #ffffff; color: var(--primary-900); font-weight: 700; border-color: #ffffff;">
+            ➕ Unggah Foto / Video Baru
+          </button>
+        </div>
+      </div>
+
+      <!-- Section Title & Filter Controls -->
+      <div class="section-header-box">
+        <div>
+          <h2 class="section-title">
+            <span>📸</span> Galeri Dokumentasi Foto & Video Literasi SMABA
+          </h2>
+          <p style="color: var(--text-muted); font-size: 0.86rem; margin-top: 4px;">
+            Arsip visual kegiatan literasi, bedah buku, lomba pojok baca 36 kelas, kunjungan Dispusip, dan sarana
+            perpustakaan.
+          </p>
+        </div>
+        <div class="filter-bar">
+          <input type="text" class="input-search" id="searchGalleryInput"
+            placeholder="Cari judul dokumentasi, pengunggah, atau kegiatan...">
+          <select class="select-filter" id="selectGalleryCategory">
+            <option value="all">Semua Kategori</option>
+            <option value="Kegiatan Internal SMAN 1 Batu">🏛️ Kegiatan Internal SMAN 1 Batu</option>
+            <option value="Kegiatan Eksternal & Dispusip">🌍 Kegiatan Eksternal & Dispusip</option>
+            <option value="Pojok Baca 36 Kelas">📖 Pojok Baca 36 Kelas</option>
+            <option value="Fasilitas Perpustakaan">🏢 Fasilitas Perpustakaan</option>
+          </select>
+          <button class="btn btn-secondary" onclick="GalleryModule.exportGalleryCsv()">
+            📥 Ekspor CSV
+          </button>
+          <button class="btn btn-primary" onclick="GalleryModule.openUploadModal()">
+            ➕ Unggah Media
+          </button>
+        </div>
+      </div>
+
+      <!-- Media Type Filter Tabs -->
+      <div class="gallery-type-tabs">
+        <button class="gallery-type-btn active" data-type="all">
+          <span>🌟 Semua Media</span>
+          <span class="gallery-count-badge" id="galleryCountAll">0</span>
+        </button>
+        <button class="gallery-type-btn" data-type="photo">
+          <span>📸 Foto Dokumentasi</span>
+          <span class="gallery-count-badge" id="galleryCountPhoto">0</span>
+        </button>
+        <button class="gallery-type-btn" data-type="video">
+          <span>🎥 Video Kegiatan</span>
+          <span class="gallery-count-badge" id="galleryCountVideo">0</span>
+        </button>
+      </div>
+
+      <!-- Gallery Grid Container -->
+      <div class="gallery-grid" id="galleryGrid"></div>
+    </section>
+
+    <!-- ========================================================
+         TAB 2: KATALOG & PEMINJAMAN BUKU PERPUSTAKAAN
+         ======================================================== -->
+    <section class="tab-panel" id="tab-library" style="display: none;">
+      <div class="section-header-box">
+        <h2 class="section-title">
+          <span>📚</span> Katalog Buku Perpustakaan SMAN 1 Batu (OPAC)
+        </h2>
+        <div class="filter-bar">
+          <input type="text" class="input-search" id="searchBookInput"
+            placeholder="Cari judul buku, penulis, ISBN, nomor rak...">
+          <select class="select-filter" id="selectBookCategory">
+            <option value="all">Semua Kategori</option>
+            <option value="Fiksi">Fiksi & Sastra</option>
+            <option value="Pengembangan Diri">Pengembangan Diri</option>
+            <option value="Sains">Sains & Teknologi</option>
+            <option value="Sejarah">Sejarah & Muatan Lokal</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Books Grid -->
+      <div class="books-grid" id="booksGrid"></div>
+    </section>
+
+    <!-- ========================================================
+         TAB 3: PAPAN PERINGKAT LITERASI (LEADERBOARD)
+         ======================================================== -->
+    <section class="tab-panel" id="tab-leaderboard" style="display: none;">
+      <div class="section-header-box">
+        <h2 class="section-title">
+          <span>🏆</span> Papan Peringkat Literasi SMABA
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.88rem;">
+          Apresiasi siswa teraktif membaca dan menyelesaikan jurnal literasi terbaik di SMAN 1 Batu
+        </p>
+      </div>
+
+      <div class="leaderboard-container">
+        <!-- Main Podium & Table -->
+        <div class="leaderboard-card">
+          <!-- Podium Top 3 -->
+          <div class="podium-row" id="podiumContainer"></div>
+
+          <!-- Table of Rankings -->
+          <div style="overflow-x: auto;">
+            <table class="leaderboard-table">
+              <thead>
+                <tr>
+                  <th style="width: 50px;">Posisi</th>
+                  <th>Siswa</th>
+                  <th>Kelas</th>
+                  <th>Lencana</th>
+                  <th>Total Bacaan</th>
+                  <th>Poin</th>
+                  <th style="width: 50px;">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboardTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Sidebar Gamification Info -->
+        <div style="display: flex; flex-direction: column; gap: 18px;">
+          <div class="leaderboard-card">
+            <h3
+              style="font-size: 1.1rem; color: var(--primary-900); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+              <span>🎖️</span> Jenjang Lencana Literasi
+            </h3>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <div
+                style="display: flex; gap: 12px; align-items: center; padding: 10px; background: #f8fafc; border-radius: var(--radius-md);">
+                <span style="font-size: 1.6rem;">🌱</span>
+                <div>
+                  <div style="font-weight: 700; font-size: 0.86rem; color: var(--primary-900);">Pembaca Pemula</div>
+                  <div style="font-size: 0.75rem; color: var(--text-muted);">Mulai 50 Poin (Minimal 1 Jurnal)</div>
+                </div>
+              </div>
+              <div
+                style="display: flex; gap: 12px; align-items: center; padding: 10px; background: #f8fafc; border-radius: var(--radius-md);">
+                <span style="font-size: 1.6rem;">📖</span>
+                <div>
+                  <div style="font-weight: 700; font-size: 0.86rem; color: var(--primary-900);">Kutu Buku Aktif</div>
+                  <div style="font-size: 0.75rem; color: var(--text-muted);">Mulai 200 Poin (Konsisten membaca harian)
+                  </div>
+                </div>
+              </div>
+              <div
+                style="display: flex; gap: 12px; align-items: center; padding: 10px; background: #f8fafc; border-radius: var(--radius-md);">
+                <span style="font-size: 1.6rem;">✍️</span>
+                <div>
+                  <div style="font-weight: 700; font-size: 0.86rem; color: var(--primary-900);">Master Resensi</div>
+                  <div style="font-size: 0.75rem; color: var(--text-muted);">Mulai 350 Poin (Ulasan mendalam & kritis)
+                  </div>
+                </div>
+              </div>
+              <div
+                style="display: flex; gap: 12px; align-items: center; padding: 10px; background: #fefce8; border: 1px solid #fef08a; border-radius: var(--radius-md);">
+                <span style="font-size: 1.6rem;">🏆</span>
+                <div>
+                  <div style="font-weight: 800; font-size: 0.86rem; color: #b45309;">Duta Literasi SMABA</div>
+                  <div style="font-size: 0.75rem; color: #78350f;">Mulai 450 Poin (Keteladanan Literasi Sekolah)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="leaderboard-card">
+            <h3 style="font-size: 1.05rem; color: var(--primary-900); margin-bottom: 10px;">
+              💡 Cara Memperoleh Poin:
+            </h3>
+            <ul style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.7; padding-left: 20px;">
+              <li><strong>+25 Poin</strong> setiap kali mengirim catatan jurnal literasi baru.</li>
+              <li><strong>+30 Poin Bonus</strong> saat jurnal disetujui & dinilai oleh Guru Pembimbing.</li>
+              <li><strong>+15 Poin</strong> membaca buku perpustakaan fisik dan meminjam secara tertib.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         TAB 4: PORTAL VALIDASI GURU & WALI KELAS
+         ======================================================== -->
+    <section class="tab-panel" id="tab-teacher" style="display: none;">
+      <!-- Teacher Stats -->
+      <div class="stats-grid" style="margin-bottom: 24px;">
+        <div class="stat-card">
+          <div class="stat-icon-box stat-icon-gold">⏳</div>
+          <div class="stat-info">
+            <div class="stat-value" id="teacherStatPending">1</div>
+            <div class="stat-label">Menunggu Validasi</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon-box stat-icon-green">✓</div>
+          <div class="stat-info">
+            <div class="stat-value" id="teacherStatApproved">2</div>
+            <div class="stat-label">Sudah Disetujui</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon-box stat-icon-blue">⚠️</div>
+          <div class="stat-info">
+            <div class="stat-value" id="teacherStatRevision">1</div>
+            <div class="stat-label">Perlu Revisi Siswa</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon-box stat-icon-purple">👨‍🎓</div>
+          <div class="stat-info">
+            <div class="stat-value" id="teacherStatStudents">3</div>
+            <div class="stat-label">Siswa Aktif Binaan</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-header-box">
+        <h2 class="section-title">
+          <span>📋</span> Antrean Pemeriksaan Jurnal Siswa
+        </h2>
+        <div class="filter-bar">
+          <input type="text" class="input-search" id="teacherSearchInput" placeholder="Cari nama siswa, buku, kelas...">
+          <select class="select-filter" id="teacherClassFilter">
+            <option value="all">Semua Rombel / Kelas</option>
+            <option value="XI-MIPA 1">XI-MIPA 1</option>
+            <option value="XI-IPS 2">XI-IPS 2</option>
+            <option value="X-E 3">X-E 3</option>
+          </select>
+          <select class="select-filter" id="teacherStatusFilter">
+            <option value="pending">⏳ Khusus Pending</option>
+            <option value="revision">⚠️ Khusus Revisi</option>
+            <option value="approved">✓ Khusus Disetujui</option>
+            <option value="all">Semua Status</option>
+          </select>
+          <button class="btn btn-secondary" onclick="TeacherModule.exportToCsv()">
+            📥 Ekspor CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- Teacher List Container -->
+      <div id="teacherVerificationList"></div>
+    </section>
+
+    <!-- ========================================================
+         TAB 5: KELOLA PUSTAKAWAN / ADMIN
+         ======================================================== -->
+    <section class="tab-panel" id="tab-admin" style="display: none;">
+      <!-- Admin Stats -->
+      <div class="stats-grid" style="margin-bottom: 24px;">
+        <div class="stat-card">
+          <div class="stat-icon-box stat-icon-blue">📚</div>
+          <div class="stat-info">
+            <div class="stat-value" id="adminStatTitles">8</div>
+            <div class="stat-label">Judul Buku Terdaftar</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon-box stat-icon-green">📦</div>
+          <div class="stat-info">
+            <div class="stat-value" id="adminStatTotalBooks">48</div>
+            <div class="stat-label">Total Eksemplar Fisik</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon-box stat-icon-gold">🔄</div>
+          <div class="stat-info">
+            <div class="stat-value" id="adminStatBorrowed">2</div>
+            <div class="stat-label">Sedang Dipinjam Siswa</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon-box stat-icon-purple">📝</div>
+          <div class="stat-info">
+            <div class="stat-value" id="adminStatJournals">4</div>
+            <div class="stat-label">Total Jurnal Masuk</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Master Buku Table -->
+      <div class="leaderboard-card" style="margin-bottom: 24px;">
+        <div class="section-header-box">
+          <h3 style="font-size: 1.15rem; color: var(--primary-900);">
+            📖 Master Data Buku Koleksi Perpustakaan
+          </h3>
+          <button class="btn btn-primary btn-sm" onclick="AdminModule.openAddBookModal()">
+            ➕ Tambah Buku Baru
+          </button>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="leaderboard-table">
+            <thead>
+              <tr>
+                <th style="width: 40px;">No</th>
+                <th>Judul & Penulis</th>
+                <th>Kategori</th>
+                <th>No. Panggil</th>
+                <th>Lokasi Rak</th>
+                <th>Stok Tersedia</th>
+                <th style="width: 80px;">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="adminBooksTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Sirkulasi Peminjaman Table -->
+      <div class="leaderboard-card" style="margin-bottom: 24px;">
+        <div class="section-header-box">
+          <h3 style="font-size: 1.15rem; color: var(--primary-900);">
+            🔄 Sirkulasi Peminjaman & Pengembalian Buku
+          </h3>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="leaderboard-table">
+            <thead>
+              <tr>
+                <th>Peminjam (Siswa)</th>
+                <th>Judul Buku</th>
+                <th>Tgl Pinjam</th>
+                <th>Jatuh Tempo</th>
+                <th>Tgl Kembali</th>
+                <th>Status</th>
+                <th>Tindakan</th>
+              </tr>
+            </thead>
+            <tbody id="adminCirculationTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Cadangan & Pemulihan Basis Data -->
+      <div class="leaderboard-card">
+        <h3 style="font-size: 1.15rem; color: var(--primary-900); margin-bottom: 8px;">
+          💾 Manajemen & Cadangan Data Sistem (Backup / Restore)
+        </h3>
+        <p style="font-size: 0.86rem; color: var(--text-muted); margin-bottom: 18px;">
+          Simpan seluruh basis data jurnal, katalog buku, dan riwayat peminjaman ke dalam berkas cadangan JSON agar data
+          tidak hilang.
+        </p>
+
+        <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+          <button class="btn btn-primary" id="btnExportBackup">
+            💾 Unduh File Cadangan (JSON)
+          </button>
+
+          <label class="btn btn-secondary" style="cursor: pointer;">
+            📥 Pulihkan Data dari JSON
+            <input type="file" id="inputRestoreFile" accept=".json" style="display: none;">
+          </label>
+
+          <button class="btn btn-secondary" style="color: var(--rose-600); border-color: #fca5a5;" id="btnResetData">
+            ⚠️ Reset ke Data Bawaan SMABA
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer
+    style="background: #ffffff; border-top: 1px solid var(--border-color); padding: 30px 0; text-align: center; font-size: 0.85rem; color: var(--text-muted);">
+    <div class="container">
+      <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 6px;">
+        <img src="assets/logo-sman1batu.png?v=2" alt="Logo SMAN 1 Batu"
+          style="width: 24px; height: 28px; object-fit: contain;">
+        <strong>SMA NEGERI 1 BATU (SMABA)</strong>
+      </div>
+      <p>Gerakan Literasi Sekolah (GLS) Cendekia & Perpustakaan Digital • Kota Batu, Jawa Timur</p>
+      <p style="font-size: 0.78rem; color: #475569; margin-top: 4px;">Kepala Sekolah: <strong>Bapak Anto Dwi Cahyono,
+          S.Pd, M.M</strong> • Kepala Perpustakaan: <strong>Ibu Rini Wahyuningsih, S.Pd</strong></p>
+      <p style="font-size: 0.76rem; color: #94a3b8; margin-top: 4px;">Semboyan: <em>"Studium et Virtus"</em> (Belajar
+        dan Kebajikan) • Berkarakter, Berprestasi, Berbudaya Literasi</p>
+    </div>
+  </footer>
+
+  <!-- ================= MODAL: TULIS / EDIT JURNAL LITERASI ================= -->
+  <div class="modal-overlay" id="modalJournal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalJournalTitle">Tulis Jurnal Literasi Siswa</h3>
+        <button class="btn-close-modal" onclick="window.app.closeModal('modalJournal')">✕</button>
+      </div>
+      <form id="formJournal">
+        <div class="modal-body">
+          <input type="hidden" id="journalEditId">
+
+          <div id="journalDirectFillNotice"></div>
+
+          <div class="form-group">
+            <label class="form-label" for="journalTargetStudentSelect">Identitas Siswa (Pilih Nama & Kelas dari 36
+              Rombel) *</label>
+            <select class="form-control" id="journalTargetStudentSelect"></select>
+            <div class="form-hint">Siswa dari seluruh 36 kelas dapat langsung mengisi jurnal bacaan tanpa perlu ijin
+              awal.</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="journalBookSelect">Pilih Buku Dari Katalog Perpustakaan SMABA:</label>
+            <select class="form-control" id="journalBookSelect"></select>
+            <div class="form-hint">Atau isi mandiri rincian buku di bawah ini jika membaca buku koleksi pribadi.</div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="journalBookTitle">Judul Buku *</label>
+              <input type="text" class="form-control" id="journalBookTitle" required
+                placeholder="Contoh: Laskar Pelangi">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="journalBookAuthor">Penulis Buku</label>
+              <input type="text" class="form-control" id="journalBookAuthor" placeholder="Contoh: Andrea Hirata">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="journalBookCategory">Kategori Bacaan</label>
+              <select class="form-control" id="journalBookCategory">
+                <option value="Fiksi / Sastra">Fiksi / Sastra (Novel, Cerpen, Puisi)</option>
+                <option value="Fiksi Sejarah">Fiksi Sejarah</option>
+                <option value="Pengembangan Diri">Pengembangan Diri / Motivasi</option>
+                <option value="Sains & Teknologi">Sains & Teknologi</option>
+                <option value="Sejarah & Budaya">Sejarah & Budaya Lokal</option>
+                <option value="Agama & Budi Pekerti">Agama & Budi Pekerti</option>
+                <option value="Biografi Tokoh">Biografi Tokoh Inspiratif</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="journalDateRead">Tanggal Membaca</label>
+              <input type="date" class="form-control" id="journalDateRead" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="journalPagesRead">Jumlah Halaman Dibaca Hari Ini</label>
+              <input type="number" class="form-control" id="journalPagesRead" min="1" placeholder="Contoh: 35" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="journalTotalPages">Total Halaman Buku</label>
+              <input type="number" class="form-control" id="journalTotalPages" min="1" placeholder="Contoh: 350">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="journalSummary">Ringkasan / Sinopsis Bacaan (Minimal 50 Karakter) *</label>
+            <textarea class="form-control" id="journalSummary" rows="4" required
+              placeholder="Ceritakan bab atau alur kisah yang telah kamu baca hari ini secara jelas..."></textarea>
+            <div class="form-hint">Tuliskan pemahamanmu dengan bahasa sendiri. Ulasan bermutu akan mendapatkan nilai
+              tinggi dari Guru Pembina!</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="journalMoral">Nilai Karakter / Hikmah yang Dipetik</label>
+            <textarea class="form-control" id="journalMoral" rows="2"
+              placeholder="Apa pelajaran berharga atau nilai karakter yang dapat kamu teladani dalam kehidupan sehari-hari?"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="journalQuote">Kutipan Menarik (Quote) dari Buku</label>
+            <input type="text" class="form-control" id="journalQuote"
+              placeholder="Contoh: Bermimpilah, karena Tuhan akan memeluk mimpi-mimpimu.">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Rating Penilaianmu terhadap Buku:</label>
+            <div class="rating-picker" id="ratingPicker">
+              <span class="rating-star active" data-val="1">★</span>
+              <span class="rating-star active" data-val="2">★</span>
+              <span class="rating-star active" data-val="3">★</span>
+              <span class="rating-star active" data-val="4">★</span>
+              <span class="rating-star active" data-val="5">★</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="window.app.closeModal('modalJournal')">Batal</button>
+          <button type="submit" class="btn btn-primary" id="btnSubmitJournal">Kirim Jurnal Literasi</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: DETAIL JURNAL LITERASI ================= -->
+  <div class="modal-overlay" id="modalJournalDetail">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Rincian Jurnal Literasi Siswa</h3>
+        <button class="btn-close-modal" onclick="window.app.closeModal('modalJournalDetail')">✕</button>
+      </div>
+      <div class="modal-body" id="journalDetailContent"></div>
+      <div class="modal-footer" id="journalDetailFooter"></div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: DETAIL BUKU PERPUSTAKAAN ================= -->
+  <div class="modal-overlay" id="modalBookDetail">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Informasi Koleksi Buku</h3>
+        <button class="btn-close-modal" onclick="window.app.closeModal('modalBookDetail')">✕</button>
+      </div>
+      <div class="modal-body" id="bookDetailContent"></div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: PENILAIAN / REVIEW GURU ================= -->
+  <div class="modal-overlay" id="modalReviewJournal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Pemeriksaan & Validasi Jurnal Siswa</h3>
+        <button class="btn-close-modal" onclick="window.app.closeModal('modalReviewJournal')">✕</button>
+      </div>
+      <form onsubmit="TeacherModule.submitReview(event)">
+        <div class="modal-body">
+          <input type="hidden" id="reviewJournalId">
+
+          <div style="background: #f8fafc; padding: 14px; border-radius: var(--radius-md); margin-bottom: 16px;">
+            <div style="font-size: 0.82rem; color: var(--text-muted);">Siswa & Rombel:</div>
+            <div style="font-weight: 800; font-size: 1.05rem; color: var(--primary-900);" id="reviewStudentName">Ahmad
+              Fauzan</div>
+            <div style="font-size: 0.85rem; color: #475569; margin-top: 4px;" id="reviewBookTitle">Laskar Pelangi</div>
+          </div>
+
+          <div style="margin-bottom: 14px;">
+            <label class="form-label">Ringkasan yang Dibuat Siswa:</label>
+            <div
+              style="background: #ffffff; border: 1px solid var(--border-color); padding: 10px; border-radius: var(--radius-md); font-size: 0.85rem; max-height: 110px; overflow-y: auto;"
+              id="reviewSummarySnippet"></div>
+          </div>
+
+          <div style="margin-bottom: 14px;">
+            <label class="form-label">Hikmah Karakter:</label>
+            <div style="font-size: 0.82rem; color: #1e293b; font-style: italic;" id="reviewMoralSnippet"></div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="reviewScore">Nilai / Skor Literasi (0 - 100) *</label>
+              <input type="number" class="form-control" id="reviewScore" min="0" max="100" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="reviewStatus">Keputusan Validasi</label>
+              <select class="form-control" id="reviewStatus">
+                <option value="approved">✓ Disetujui (Berikan Poin Literasi)</option>
+                <option value="revision">⚠️ Minta Revisi / Perbaiki</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reviewFeedbackText">Masukan / Apresiasi Guru Pembina:</label>
+            <textarea class="form-control" id="reviewFeedbackText" rows="3"
+              placeholder="Tuliskan catatan apresiasi, saran berpikir kritis, atau panduan revisi bagi siswa..."></textarea>
+          </div>
+
+          <!-- Quick Feedback Chips -->
+          <div style="margin-top: 10px;">
+            <div style="font-size: 0.74rem; color: var(--text-muted); margin-bottom: 6px;">Pilihan Cepat Masukan Guru:
+            </div>
+            <div id="quickFeedbackChips" style="display: flex; flex-wrap: wrap; gap: 6px;">
+              <span class="feedback-chip"
+                style="cursor: pointer; background: #ecfdf5; color: #065f46; font-size: 0.75rem; padding: 4px 10px; border-radius: var(--radius-full); border: 1px solid #a7f3d0;"
+                data-text="Ulasan sangat analitis dan pesan moral tersampaikan dengan sangat baik! Terus tingkatkan.">
+                🌟 Analitis & Reflektif
+              </span>
+              <span class="feedback-chip"
+                style="cursor: pointer; background: #eff6ff; color: #1e40af; font-size: 0.75rem; padding: 4px 10px; border-radius: var(--radius-full); border: 1px solid #bfdbfe;"
+                data-text="Refleksi karakter sangat kontekstual dengan kehidupan pelajar SMA masa kini. Hebat!">
+                👍 Kontekstual Karakter
+              </span>
+              <span class="feedback-chip"
+                style="cursor: pointer; background: #fff1f2; color: #9f1239; font-size: 0.75rem; padding: 4px 10px; border-radius: var(--radius-full); border: 1px solid #fecdd3;"
+                data-text="Ringkasan masih terlalu singkat. Mohon jabarkan alur utama dan hikmah yang kamu peroleh dari bab tersebut ya!">
+                ⚠️ Minta Uraian Lebih Panjang
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary"
+            onclick="window.app.closeModal('modalReviewJournal')">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan Hasil Validasi</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: TAMBAH / EDIT BUKU ADMIN ================= -->
+  <div class="modal-overlay" id="modalBookAdmin">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalBookAdminTitle">Tambah Koleksi Buku Perpustakaan</h3>
+        <button class="btn-close-modal" onclick="window.app.closeModal('modalBookAdmin')">✕</button>
+      </div>
+      <form id="formBookAdmin">
+        <div class="modal-body">
+          <input type="hidden" id="bookEditId">
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="adminBookTitle">Judul Buku *</label>
+              <input type="text" class="form-control" id="adminBookTitle" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="adminBookAuthor">Penulis *</label>
+              <input type="text" class="form-control" id="adminBookAuthor" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="adminBookPublisher">Penerbit</label>
+              <input type="text" class="form-control" id="adminBookPublisher">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="adminBookYear">Tahun Terbit</label>
+              <input type="number" class="form-control" id="adminBookYear">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="adminBookCategory">Kategori</label>
+              <select class="form-control" id="adminBookCategory">
+                <option value="Fiksi / Sastra">Fiksi / Sastra</option>
+                <option value="Fiksi Sejarah">Fiksi Sejarah</option>
+                <option value="Pengembangan Diri">Pengembangan Diri</option>
+                <option value="Sains & Teknologi">Sains & Teknologi</option>
+                <option value="Sejarah Lokal">Sejarah Lokal</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="adminBookCallNumber">Nomor Panggil (DDC)</label>
+              <input type="text" class="form-control" id="adminBookCallNumber" placeholder="Contoh: 813 HIR l">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="adminBookShelf">Lokasi Rak Fisik</label>
+              <input type="text" class="form-control" id="adminBookShelf" placeholder="Contoh: Rak Fiksi A-02">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="adminBookPages">Jumlah Halaman</label>
+              <input type="number" class="form-control" id="adminBookPages">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="adminBookStock">Jumlah Stok Eksemplar</label>
+              <input type="number" class="form-control" id="adminBookStock" min="1" value="5" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="adminBookIsbn">ISBN</label>
+              <input type="text" class="form-control" id="adminBookIsbn" placeholder="Contoh: 978-602-...">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="adminBookSynopsis">Sinopsis Ringkas</label>
+            <textarea class="form-control" id="adminBookSynopsis" rows="3"></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary"
+            onclick="window.app.closeModal('modalBookAdmin')">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan Buku</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: PRINT PREVIEW PORTOFOLIO RESMI ================= -->
+  <div class="modal-overlay" id="modalPrintPreview">
+    <div class="modal-content" style="max-width: 820px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Pratinjau Lembar Portofolio Jurnal Resmi SMAN 1 Batu</h3>
+        <button class="btn-close-modal" onclick="window.app.closeModal('modalPrintPreview')">✕</button>
+      </div>
+      <div class="modal-body"
+        style="background: #ffffff; border: 1px solid var(--border-color); margin: 16px; border-radius: var(--radius-md);">
+        <div id="printSheetContent"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary"
+          onclick="window.app.closeModal('modalPrintPreview')">Tutup</button>
+        <button type="button" class="btn btn-primary" onclick="PrintModule.doPrint()">🖨️ Cetak / Simpan ke PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: TAMBAH DATA SISWA ================= -->
+  <div class="modal-overlay" id="modalAddStudent">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Tambah Data Siswa Baru (36 Kelas)</h3>
+        <button class="btn-close-modal" onclick="window.app.closeModal('modalAddStudent')">✕</button>
+      </div>
+      <form id="formAddStudent">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="addStudentName">Nama Lengkap Siswa *</label>
+            <input type="text" class="form-control" id="addStudentName" required
+              placeholder="Contoh: Muhammad Kevin Alamsyah">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="addStudentNisn">NISN Siswa</label>
+              <input type="text" class="form-control" id="addStudentNisn" placeholder="Contoh: 0078129841">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="addStudentGender">Jenis Kelamin</label>
+              <select class="form-control" id="addStudentGender">
+                <option value="L">Laki-laki (👨‍🎓)</option>
+                <option value="P">Perempuan (👩‍🎓)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="addStudentClassSelect">Pilih Kelas (36 Rombel SMAN 1 Batu) *</label>
+            <select class="form-control" id="addStudentClassSelect" required></select>
+            <div class="form-hint">Pilih dari 12 Kelas X (X-1 s.d. X-12), 12 Kelas XI (XI-1 s.d. XI-12), atau 12 Kelas
+              XII (XII-1 s.d. XII-12).</div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary"
+            onclick="window.app.closeModal('modalAddStudent')">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan Siswa</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: DETAIL KEGIATAN PERPUSTAKAAN ================= -->
+  <div class="modal-overlay" id="modalActivityDetail">
+    <div class="modal-content" style="max-width: 680px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Rincian Agenda Kegiatan</h3>
+        <button class="btn-close-modal" onclick="window.app.closeModal('modalActivityDetail')">✕</button>
+      </div>
+      <div class="modal-body" id="activityDetailContent">
+        <!-- Rendered dynamically by ActivitiesModule.openDetailModal() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: TAMBAH / EDIT KEGIATAN ================= -->
+  <div class="modal-overlay" id="modalAddActivity">
+    <div class="modal-content" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalActivityTitle">Tambah Kegiatan Perpustakaan Baru</h3>
+        <button class="btn-close-modal" onclick="window.app.closeModal('modalAddActivity')">✕</button>
+      </div>
+      <form id="formAddActivity">
+        <div class="modal-body">
+          <input type="hidden" id="activityEditId">
+
+          <div class="form-group">
+            <label class="form-label" for="actTitle">Nama / Judul Kegiatan *</label>
+            <input type="text" class="form-control" id="actTitle" required
+              placeholder="Contoh: Bedah Buku Karya Siswa & Penulis Tamu">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="actType">Klasifikasi Kegiatan *</label>
+              <select class="form-control" id="actType" required>
+                <option value="internal">🏛️ Kegiatan Internal SMAN 1 Batu</option>
+                <option value="external">🌍 Kegiatan Eksternal / Kerjasama Luar</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="actCategory">Kategori / Topik Kegiatan</label>
+              <input type="text" class="form-control" id="actCategory"
+                placeholder="Contoh: Diskusi Sastra, Lomba Literasi">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="actDate">Tanggal Pelaksanaan *</label>
+              <input type="date" class="form-control" id="actDate" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="actTime">Waktu / Jam *</label>
+              <input type="text" class="form-control" id="actTime" required placeholder="Contoh: 08.30 - 11.30 WIB">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="actLocation">Lokasi Kegiatan *</label>
+              <input type="text" class="form-control" id="actLocation" required
+                placeholder="Contoh: Ruang Baca Multimedia SMABA / Daring Zoom">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="actStatus">Status Pelaksanaan</label>
+              <select class="form-control" id="actStatus">
+                <option value="upcoming">⏳ Akan Datang</option>
+                <option value="ongoing">🔥 Sedang Berlangsung</option>
+                <option value="completed">✓ Selesai Terlaksana</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="actCoordinator">Koordinator / Penanggung Jawab *</label>
+              <input type="text" class="form-control" id="actCoordinator" required
+                placeholder="Contoh: Ibu Sulis Setiasih / Tim GLS">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="actTarget">Sasaran Peserta</label>
+              <input type="text" class="form-control" id="actTarget"
+                placeholder="Contoh: Seluruh Siswa 36 Rombel & Guru">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="actQuota">Kuota Peserta Siswa</label>
+              <input type="number" class="form-control" id="actQuota" value="50" min="5" max="1500">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="actPoints">Bonus Poin Literasi Siswa</label>
+              <input type="number" class="form-control" id="actPoints" value="30" min="0" max="200">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="actDescription">Deskripsi & Agenda Kegiatan *</label>
+            <textarea class="form-control" id="actDescription" required rows="3"
+              placeholder="Jelaskan ringkasan agenda kegiatan, narasumber, dan ketentuan teknis peserta..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="actObjectives">Tujuan & Luaran (Output)</label>
+            <textarea class="form-control" id="actObjectives" rows="2"
+              placeholder="Contoh: Meningkatkan minat baca siswa, memproduksi karya resensi, dll."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary"
+            onclick="window.app.closeModal('modalAddActivity')">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan Agenda Kegiatan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: UNGGAH FOTO & VIDEO ================= -->
+  <div class="modal-overlay" id="modalUploadMedia">
+    <div class="modal-content" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Unggah Dokumentasi Foto / Video Perpustakaan</h3>
+        <button class="btn-close-modal" onclick="window.app.closeModal('modalUploadMedia')">✕</button>
+      </div>
+      <form id="formUploadMedia">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="uploadTitle">Nama / Judul Dokumentasi *</label>
+            <input type="text" class="form-control" id="uploadTitle" required
+              placeholder="Contoh: Dokumentasi Sesi Bedah Buku & Pojok Baca XI-1">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="uploadMediaType">Tipe Media *</label>
+              <select class="form-control" id="uploadMediaType" required>
+                <option value="photo">📸 Foto Dokumentasi (JPG, PNG, WebP)</option>
+                <option value="video">🎥 Video Kegiatan (MP4, WebM)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="uploadCategory">Klasifikasi Kategori *</label>
+              <select class="form-control" id="uploadCategory" required>
+                <option value="Kegiatan Internal SMAN 1 Batu">🏛️ Kegiatan Internal SMAN 1 Batu</option>
+                <option value="Kegiatan Eksternal & Dispusip">🌍 Kegiatan Eksternal & Dispusip</option>
+                <option value="Pojok Baca 36 Kelas">📖 Pojok Baca 36 Kelas</option>
+                <option value="Fasilitas Perpustakaan">🏢 Fasilitas Perpustakaan</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="uploadDate">Tanggal Dokumentasi</label>
+              <input type="date" class="form-control" id="uploadDate" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="uploadUploader">Nama Pengunggah / Fotografer</label>
+              <input type="text" class="form-control" id="uploadUploader" required>
+            </div>
+          </div>
+
+          <!-- Video Duration Field (Only shown if video) -->
+          <div class="form-group" id="groupVideoDuration" style="display: none;">
+            <label class="form-label" for="uploadDuration">Estimasi Durasi Video (Menit:Detik)</label>
+            <input type="text" class="form-control" id="uploadDuration" placeholder="Contoh: 03:45">
+          </div>
+
+          <!-- File Upload Picker & Live Preview -->
+          <div class="form-group">
+            <label class="form-label" for="mediaFileInput">Pilih Berkas Foto / Video Dari Perangkat</label>
+            <input type="file" class="form-control" id="mediaFileInput" accept="image/*,video/*">
+            <div id="uploadPreviewContainer" style="margin-top: 10px;"></div>
+          </div>
+
+          <!-- Google Drive Integration Link Input -->
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <label class="form-label" for="uploadDriveLink" style="margin-bottom: 0;">
+                Tautan Google Drive (Akun: perpustakaan@sman1batu.sch.id)
+              </label>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="GalleryModule.pasteDefaultDriveLink()"
+                style="font-size: 0.72rem; padding: 2px 8px;">
+                📋 Tempel Link Drive Sekolah
+              </button>
+            </div>
+            <input type="url" class="form-control" id="uploadDriveLink"
+              placeholder="https://drive.google.com/drive/folders/... atau https://drive.google.com/file/d/...">
+            <div class="form-hint">
+              Dokumentasi tersimpan di Google Drive sekolah. Siswa & guru dapat mengakses berkas asli berkualitas tinggi
+              melalui tautan ini.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="uploadDescription">Keterangan / Deskripsi Dokumentasi</label>
+            <textarea class="form-control" id="uploadDescription" rows="3"
+              placeholder="Tuliskan keterangan kegiatan, rombel yang terlibat, atau narasumber yang hadir..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary"
+            onclick="window.app.closeModal('modalUploadMedia')">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan & Tautkan ke Drive</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: PENAMPIL MEDIA (LIGHTBOX / PEMUTAR) ================= -->
+  <div class="modal-overlay" id="modalMediaViewer">
+    <div class="modal-content" style="max-width: 820px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Penampil Dokumentasi Perpustakaan SMABA</h3>
+        <button class="btn-close-modal" onclick="window.app.closeModal('modalMediaViewer')">✕</button>
+      </div>
+      <div class="modal-body" id="mediaViewerContent">
+        <!-- Rendered dynamically by GalleryModule.openViewer() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Container for Toast Notifications -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Printable Area Only Visible on Paper/PDF Print -->
+  <div class="print-sheet-wrapper" id="actualPrintWrapper"></div>
+
+  <!-- ================= SCRIPTS ================= -->
+  <script src="js/data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/students.js"></script>
+  <script src="js/activities.js"></script>
+  <script src="js/gallery.js"></script>
+  <script src="js/journal.js"></script>
+  <script src="js/library.js"></script>
+  <script src="js/teacher.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/print.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+
+</html>

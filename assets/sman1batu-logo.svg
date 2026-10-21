@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 350" width="100%" height="100%">
+  <defs>
+    <!-- Filter for crisp drop shadow -->
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- Outer Dark Navy Hexagon Border -->
+  <polygon points="150,8 285,82 285,258 150,342 15,258 15,82" 
+           fill="#1e1b4b" stroke="#0f172a" stroke-width="4" filter="url(#shadow)" />
+
+  <!-- White Intermediary Hexagon Band -->
+  <polygon points="150,22 270,88 270,248 150,324 30,248 30,88" 
+           fill="#ffffff" />
+
+  <!-- Inner Dark Blue Hexagon Border -->
+  <polygon points="150,30 258,92 258,242 150,314 42,242 42,92" 
+           fill="#1e1b4b" />
+
+  <!-- Core Cyan / Sky Blue Field -->
+  <polygon points="150,36 250,96 250,238 150,308 50,238 50,96" 
+           fill="#38b6d8" />
+
+  <!-- Arc Text: SMA NEGERI 1 -->
+  <path id="textArc" d="M 60,140 A 105,105 0 0,1 240,140" fill="none" stroke="none" />
+  <text font-family="'Times New Roman', Times, serif" font-size="28" font-weight="900" fill="#0f172a" letter-spacing="3.5">
+    <textPath href="#textArc" startOffset="50%" text-anchor="middle">
+      SMA NEGERI 1
+    </textPath>
+  </text>
+
+  <!-- Golden Hands / Wings reaching upward -->
+  <!-- Left Hand -->
+  <path d="M 124,208 C 120,175 106,145 104,105 C 109,118 114,136 122,142 C 122,125 116,108 112,96 C 119,106 126,122 131,135 C 131,118 128,102 124,94 C 133,105 140,126 142,148 L 134,208 Z" 
+        fill="#facc15" stroke="#ca8a04" stroke-width="1.5" />
+
+  <!-- Right Hand -->
+  <path d="M 176,208 C 180,175 194,145 196,105 C 191,118 186,136 178,142 C 178,125 184,108 188,96 C 181,106 174,122 169,135 C 169,118 172,102 176,94 C 167,105 160,126 158,148 L 166,208 Z" 
+        fill="#facc15" stroke="#ca8a04" stroke-width="1.5" />
+
+  <!-- Central Red Sun / Sphere of Wisdom -->
+  <circle cx="150" cy="116" r="28" fill="#dc2626" stroke="#991b1b" stroke-width="2" />
+  <circle cx="144" cy="110" r="24" fill="#ef4444" opacity="0.6" />
+
+  <!-- Base Pillar of Hands -->
+  <polygon points="120,208 134,148 142,148 136,208" fill="#eab308" />
+  <polygon points="180,208 166,148 158,148 164,208" fill="#eab308" />
+
+  <!-- Red Text: BATU -->
+  <text x="150" y="240" font-family="'Times New Roman', Impact, serif" font-size="34" font-weight="900" 
+        fill="#dc2626" stroke="#ffffff" stroke-width="1" text-anchor="middle" letter-spacing="2">
+    BATU
+  </text>
+
+  <!-- Open Book Symbol of Literacy below BATU -->
+  <path d="M 150,265 C 130,250 95,246 82,254 L 82,267 C 98,258 130,262 150,277 C 170,262 202,258 218,267 L 218,254 C 205,246 170,250 150,265 Z" 
+        fill="#ffffff" stroke="#1e1b4b" stroke-width="2.5" />
+  <line x1="150" y1="265" x2="150" y2="277" stroke="#1e1b4b" stroke-width="2.5" />
+
+  <!-- Bottom Yellow Ribbon Banner -->
+  <polygon points="65,286 235,286 226,316 74,316" fill="#facc15" stroke="#b45309" stroke-width="2" />
+
+  <!-- Banner Text: STUDIUM ET VIRTUS -->
+  <text x="150" y="306" font-family="'Times New Roman', Times, serif" font-size="13.5" font-weight="bold" 
+        fill="#b91c1c" text-anchor="middle" letter-spacing="1">
+    STUDIUM ET VIRTUS
+  </text>
+</svg>
