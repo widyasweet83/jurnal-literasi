@@ -38,6 +38,9 @@ const AdminModule = {
     this.renderStats();
     this.renderBooksTable();
     this.renderCirculationTable();
+    if (window.firebaseService) {
+      window.firebaseService.updateStatusBadge();
+    }
   },
 
   renderStats() {

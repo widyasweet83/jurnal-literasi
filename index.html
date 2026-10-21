@@ -28,7 +28,14 @@
       </div>
 
       <!-- Quick Role Switcher for Interactive Evaluation -->
-      <div style="display: flex; align-items: center; gap: 12px;">
+      <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+        <!-- Firebase Online Status Badge -->
+        <button class="firebase-status-badge" id="firebaseStatusBadge" onclick="window.firebaseService.openSettingsModal()" title="Status Koneksi Database Firebase">
+          <span class="db-status-dot unconfigured" id="firebaseStatusDot"></span>
+          <span class="db-status-text" id="firebaseStatusText">Database: Mode Lokal</span>
+          <span style="font-size: 0.85rem; opacity: 0.7;">⚙️</span>
+        </button>
+
         <div class="role-switcher-box" title="Ganti sudut pandang akun untuk menguji fitur">
           <button class="role-btn active" data-userid="siswa-1">
             <span>👨‍🎓</span> Ahmad (Siswa)
@@ -615,6 +622,39 @@
             </thead>
             <tbody id="adminCirculationTableBody"></tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- Manajemen Basis Data Online Firebase -->
+      <div class="leaderboard-card" style="margin-bottom: 24px; border: 1.5px solid #fed7aa; background: linear-gradient(180deg, #fffaf5 0%, #ffffff 100%);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1.4rem;">🔥</span>
+              <h3 style="font-size: 1.15rem; color: #9a3412;">
+                Basis Data Online Firebase (Multi-User Realtime Cloud)
+              </h3>
+            </div>
+            <p style="font-size: 0.86rem; color: var(--text-muted); margin-top: 4px;">
+              Hubungkan aplikasi ke database online Firebase agar data jurnal siswa, buku perpustakaan, dan verifikasi guru tersinkronisasi otomatis antar perangkat secara real-time.
+            </p>
+          </div>
+          <div id="adminFirebaseStatusDisplay" style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; padding: 6px 14px; background: #fff; border: 1px solid #fed7aa; border-radius: var(--radius-full);">
+            <span class="db-status-dot unconfigured"></span>
+            <strong>Mode Lokal (Offline)</strong>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <button class="btn btn-primary" onclick="window.firebaseService.openSettingsModal()" style="background: #ea580c; border-color: #c2410c;">
+            ⚙️ Konfigurasi Kunci Firebase
+          </button>
+          <button class="btn btn-secondary" id="btnUploadToFirebase">
+            ☁️ Upload Data Lokal ke Cloud
+          </button>
+          <button class="btn btn-secondary" id="btnFetchFromFirebase">
+            🔄 Tarik Data Terbaru dari Cloud
+          </button>
         </div>
       </div>
 
@@ -1255,13 +1295,138 @@
     </div>
   </div>
 
+  <!-- ================= MODAL: PENGATURAN DATABASE FIREBASE ================= -->
+  <div class="modal-overlay" id="modalFirebaseSettings">
+    <div class="modal-content" style="max-width: 680px;">
+      <div class="modal-header" style="background: linear-gradient(135deg, #fff7ed 0%, #ffffff 100%);">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.5rem;">🔥</span>
+          <h3 class="modal-title" style="color: #9a3412;">Pengaturan Database Online (Firebase Realtime)</h3>
+        </div>
+        <button class="btn-close-modal" onclick="window.app.closeModal('modalFirebaseSettings')">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Status Terkini -->
+        <div id="modalFirebaseCurrentStatus"></div>
+
+        <!-- Panduan Pembuatan Proyek Firebase -->
+        <details class="fb-guide-box" style="cursor: pointer;">
+          <summary style="font-weight: 700; color: #9a3412; outline: none; margin-bottom: 10px;">
+            📖 Panduan 5 Langkah Membuat Firebase Database Gratis (Klik untuk Buka)
+          </summary>
+          <div style="margin-top: 12px;">
+            <div class="fb-guide-step">
+              <span class="fb-step-num">1</span>
+              <div>
+                Buka <a href="https://console.firebase.google.com" target="_blank" style="color: var(--primary-600); font-weight: 600; text-decoration: underline;">Firebase Console</a> dan login menggunakan akun Google Anda.
+              </div>
+            </div>
+            <div class="fb-guide-step">
+              <span class="fb-step-num">2</span>
+              <div>
+                Klik <strong>"Add project"</strong> (Tambah proyek), beri nama misalnya: <code>jurnal-literasi-smaba</code>. Ikuti langkah hingga selesai.
+              </div>
+            </div>
+            <div class="fb-guide-step">
+              <span class="fb-step-num">3</span>
+              <div>
+                Di menu sebelah kiri, pilih <strong>Build &gt; Realtime Database</strong> lalu klik tombol <strong>Create Database</strong>. Pilih lokasi: <strong>Singapore (asia-southeast1)</strong>.
+              </div>
+            </div>
+            <div class="fb-guide-step">
+              <span class="fb-step-num">4</span>
+              <div>
+                Buka tab <strong>Rules</strong> pada Realtime Database, ganti isinya menjadi:
+                <pre class="fb-code-snippet">{
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}</pre>
+                Lalu klik tombol <strong>Publish</strong>.
+              </div>
+            </div>
+            <div class="fb-guide-step">
+              <span class="fb-step-num">5</span>
+              <div>
+                Klik ikon <strong>⚙️ Project Settings</strong> di pojok kiri atas &gt; gulir ke bagian <strong>Your apps</strong> &gt; klik ikon Web <strong>&lt;/&gt;</strong>. Beri nama web app, lalu salin objek <code>firebaseConfig</code> dan tempelkan pada kolom di bawah ini.
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <form id="formFirebaseConfig">
+          <div class="form-group">
+            <label class="form-label" for="fbRawConfigInput">
+              <strong>Opsi Cepat:</strong> Tempelkan Cuplikan Objek <code>firebaseConfig</code> di sini
+            </label>
+            <textarea class="form-control" id="fbRawConfigInput" rows="4" style="font-family: monospace; font-size: 0.82rem;"
+              placeholder='Contoh:&#10;const firebaseConfig = {&#10;  apiKey: "AIzaSy...",&#10;  authDomain: "...",&#10;  databaseURL: "https://jurnal-literasi-...firebasedatabase.app",&#10;  projectId: "...",&#10;  ...&#10;};'></textarea>
+            <div class="form-hint">Sistem akan otomatis mengekstrak API Key, Database URL, dan Project ID.</div>
+          </div>
+
+          <details style="margin-top: 14px; margin-bottom: 16px;">
+            <summary style="font-size: 0.85rem; color: var(--primary-600); cursor: pointer; font-weight: 600;">
+              Atau isi kolom satu per satu (Klik untuk menampilkan)
+            </summary>
+            <div style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="form-group" style="grid-column: span 2;">
+                <label class="form-label" for="fbDatabaseURL">Database URL (Realtime Database) *</label>
+                <input type="text" class="form-control" id="fbDatabaseURL" placeholder="https://proyek-default-rtdb.asia-southeast1.firebasedatabase.app">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="fbApiKey">API Key *</label>
+                <input type="text" class="form-control" id="fbApiKey" placeholder="AIzaSy...">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="fbProjectId">Project ID *</label>
+                <input type="text" class="form-control" id="fbProjectId" placeholder="jurnal-literasi-smaba">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="fbAuthDomain">Auth Domain</label>
+                <input type="text" class="form-control" id="fbAuthDomain" placeholder="proyek.firebaseapp.com">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="fbStorageBucket">Storage Bucket</label>
+                <input type="text" class="form-control" id="fbStorageBucket" placeholder="proyek.appspot.com">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="fbMessagingSenderId">Messaging Sender ID</label>
+                <input type="text" class="form-control" id="fbMessagingSenderId" placeholder="123456789">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="fbAppId">App ID</label>
+                <input type="text" class="form-control" id="fbAppId" placeholder="1:123456789:web:abcdef">
+              </div>
+            </div>
+          </details>
+
+          <div class="modal-footer" style="padding-top: 14px; border-top: 1px solid var(--border-color);">
+            <button type="button" class="btn btn-secondary" onclick="window.app.closeModal('modalFirebaseSettings')">
+              Tutup
+            </button>
+            <button type="submit" class="btn btn-primary" style="background: #ea580c; border-color: #c2410c;">
+              💾 Simpan &amp; Hubungkan ke Firebase
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <!-- Container for Toast Notifications -->
   <div id="toastContainer" class="toast-container"></div>
 
   <!-- Printable Area Only Visible on Paper/PDF Print -->
   <div class="print-sheet-wrapper" id="actualPrintWrapper"></div>
 
+  <!-- ================= FIREBASE SDK COMPAT ================= -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
   <!-- ================= SCRIPTS ================= -->
+  <script src="js/firebase-config.js"></script>
   <script src="js/data.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/students.js"></script>

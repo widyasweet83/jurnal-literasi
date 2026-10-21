@@ -114,12 +114,31 @@ class AppStorage {
     return fresh;
   }
 
-  saveData(data = this.data) {
+  saveData(data = this.data, syncToCloud = true) {
     this.data = data;
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(this.data));
     } catch (e) {
       console.error("Gagal menyimpan data ke LocalStorage:", e);
+    }
+
+    // Sinkronisasi otomatis ke Firebase jika online
+    if (syncToCloud && window.firebaseService && typeof window.firebaseService.isReady === "function" && window.firebaseService.isReady()) {
+      window.firebaseService.saveData(this.data);
+    }
+  }
+
+  onRemoteDataReceived(remoteData) {
+    if (!remoteData || typeof remoteData !== "object") return;
+    if (!remoteData.users || !remoteData.journals) return;
+
+    this.data = remoteData;
+    // Simpan ke cache lokal tanpa looping push balik ke Firebase
+    this.saveData(this.data, false);
+
+    // Render ulang seluruh tampilan jika aplikasi sudah siap
+    if (window.app && typeof window.app.renderAll === "function") {
+      window.app.renderAll();
     }
   }
 

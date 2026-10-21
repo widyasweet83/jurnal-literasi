@@ -86,6 +86,12 @@ Anda dapat langsung beralih peran akun hanya dengan mengklik tombol pengalih per
 - **Pulihkan Data (Restore)**: Unggah file `.json` untuk mengembalikan data kapan saja.
 - **Reset Data**: Kembalikan ke pengaturan awal demo SMAN 1 Batu.
 
+### 9. Database Online Multi-Perangkat (Firebase Realtime Cloud)
+- **Sinkronisasi Realtime Dua Arah**: Jurnal bacaan siswa, validasi guru, katalog buku, dan peminjaman tersimpan di Firebase Realtime Database dan otomatis terupdate secara langsung di seluruh laptop/HP pengguna.
+- **Dual-Mode Fleksibel (Cloud & Lokal)**: Aplikasi tetap dapat berjalan mulus secara offline dengan *LocalStorage* saat belum dihubungkan ke Firebase.
+- **Indikator Status Interaktif**: Status koneksi tampil di bilah atas aplikasi (🟢 *Online Firebase* / 🟡 *Mode Lokal*).
+- **Konfigurasi Mudah**: Cukup klik tombol status di bilah atas aplikasi, lalu tempelkan cuplikan `firebaseConfig` Anda.
+
 ---
 
 ## 💻 Struktur Berkas
@@ -106,6 +112,7 @@ d:\APLIKASI PERPUSTAKAAN\
 │   └── style.css           # Sistem desain modern, kartu kegiatan, glassmorphism & responsive
 │
 └── js/
+    ├── firebase-config.js  # Layanan & konfigurasi sinkronisasi Firebase Realtime Database
     ├── data.js             # Data master 36 kelas, profil sekolah, pengguna 3 role, agenda kegiatan & katalog buku
     ├── storage.js          # Pengontrol LocalStorage, kalkulasi poin, registrasi kegiatan, migrasi & ekspor
     ├── students.js         # Modul direktori 36 kelas siswa & roster

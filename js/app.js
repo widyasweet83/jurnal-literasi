@@ -9,6 +9,11 @@ class App {
   }
 
   init() {
+    // Inisialisasi Layanan Firebase Database Realtime
+    if (window.firebaseService) {
+      window.firebaseService.init();
+    }
+
     // Inisialisasi modul
     window.JournalModule.init();
     window.LibraryModule.init();
@@ -92,6 +97,60 @@ class App {
     if (journalSearch) {
       journalSearch.addEventListener("input", () => {
         this.renderJournalsTab();
+      });
+    }
+
+    // Firebase Configuration Form
+    const formFirebase = document.getElementById("formFirebaseConfig");
+    if (formFirebase) {
+      formFirebase.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const rawCode = document.getElementById("fbRawConfigInput")?.value?.trim();
+        let configToSave = null;
+
+        if (rawCode) {
+          configToSave = window.firebaseService.parseConfigString(rawCode);
+          if (!configToSave) {
+            this.showToast("Format teks konfigurasi tidak valid. Periksa kembali cuplikan kode Firebase Anda.", "error");
+            return;
+          }
+        } else {
+          const apiKey = document.getElementById("fbApiKey")?.value?.trim();
+          const authDomain = document.getElementById("fbAuthDomain")?.value?.trim();
+          const databaseURL = document.getElementById("fbDatabaseURL")?.value?.trim();
+          const projectId = document.getElementById("fbProjectId")?.value?.trim();
+          const storageBucket = document.getElementById("fbStorageBucket")?.value?.trim();
+          const messagingSenderId = document.getElementById("fbMessagingSenderId")?.value?.trim();
+          const appId = document.getElementById("fbAppId")?.value?.trim();
+
+          if (!apiKey || (!databaseURL && !projectId)) {
+            this.showToast("Mohon lengkapi minimal API Key dan Database URL / Project ID.", "error");
+            return;
+          }
+
+          configToSave = { apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId, appId };
+        }
+
+        window.firebaseService.saveConfig(configToSave);
+      });
+    }
+
+    // Firebase Sync Buttons
+    const btnSyncCloud = document.getElementById("btnUploadToFirebase");
+    if (btnSyncCloud) {
+      btnSyncCloud.addEventListener("click", () => {
+        if (confirm("Upload seluruh data perpustakaan lokal saat ini ke cloud Firebase? Data di cloud akan diperbarui.")) {
+          window.firebaseService.uploadLocalData(window.storage.data, true);
+        }
+      });
+    }
+
+    const btnFetchCloud = document.getElementById("btnFetchFromFirebase");
+    if (btnFetchCloud) {
+      btnFetchCloud.addEventListener("click", () => {
+        if (confirm("Tarik data dari cloud Firebase untuk menimpa data di browser ini?")) {
+          window.firebaseService.fetchRemoteData();
+        }
       });
     }
   }
