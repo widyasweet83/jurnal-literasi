@@ -3,6 +3,41 @@
 // State Aplikasi, Tab Switching, Role Switcher, & Toast
 // ========================================================
 
+const TAB_TITLES = {
+  journals: {
+    title: "Jurnal Literasi Siswa",
+    subtitle: "Pencatatan Reflektif & Pembiasaan Membaca Harian Siswa SMAN 1 Batu"
+  },
+  leaderboard: {
+    title: "Papan Peringkat Literasi",
+    subtitle: "Gamifikasi, Podium Juara & Peringkat Pembaca Teraktif SMABA"
+  },
+  students: {
+    title: "Direktori Data Siswa (36 Rombel)",
+    subtitle: "12 Kelas X, 12 Kelas XI, dan 12 Kelas XII SMAN 1 Batu"
+  },
+  activities: {
+    title: "Agenda Kegiatan Perpustakaan",
+    subtitle: "Jadwal Gerakan Literasi Sekolah (Internal & Eksternal) SMAN 1 Batu"
+  },
+  gallery: {
+    title: "Galeri Dokumentasi Foto & Video",
+    subtitle: "Dokumentasi Media Digital Kegiatan Literasi & Perpustakaan SMABA"
+  },
+  library: {
+    title: "Katalog Buku & Sirkulasi (OPAC)",
+    subtitle: "Peminjaman Buku Mandiri & Informasi Koleksi Perpustakaan Sekolah"
+  },
+  teacher: {
+    title: "Portal Validasi Guru & Wali Kelas",
+    subtitle: "Pemeriksaan, Pemberian Skor (0-100), dan Umpan Balik Jurnal Bacaan"
+  },
+  admin: {
+    title: "Panel Pengelolaan Perpustakaan",
+    subtitle: "Master Koleksi Buku, Sirkulasi, Cadangan Data & Database Cloud"
+  }
+};
+
 class App {
   constructor() {
     this.currentTab = "journals"; // journals, library, teacher, leaderboard, admin
@@ -12,6 +47,15 @@ class App {
     // Inisialisasi Layanan Firebase Database Realtime
     if (window.firebaseService) {
       window.firebaseService.init();
+    }
+
+    // Restore status ciut sidebar dari preferensi pengguna
+    if (localStorage.getItem("SMABA_SIDEBAR_COLLAPSED") === "true") {
+      document.querySelector(".app-layout")?.classList.add("sidebar-collapsed");
+      const collapseText = document.querySelector(".sidebar-collapse-btn .collapse-text");
+      const collapseIcon = document.querySelector(".sidebar-collapse-btn .collapse-icon");
+      if (collapseText) collapseText.textContent = "Buka Menu";
+      if (collapseIcon) collapseIcon.textContent = "▶";
     }
 
     // Inisialisasi modul
@@ -158,10 +202,25 @@ class App {
   switchTab(tabName) {
     this.currentTab = tabName;
 
-    // Update active nav button
+    // Tutup drawer sidebar pada layar mobile saat menu diklik
+    if (window.innerWidth < 1024) {
+      this.toggleSidebar(false);
+    }
+
+    // Update active nav button (baik di sidebar maupun bar navigasi)
     document.querySelectorAll(".nav-item-btn").forEach(btn => {
       btn.classList.toggle("active", btn.dataset.tab === tabName);
     });
+
+    // Update judul & subjudul halaman di topbar header secara dinamis
+    const info = TAB_TITLES[tabName] || {
+      title: "SIPUS-LIT SMABA",
+      subtitle: "SMA Negeri 1 Batu • Gerakan Literasi Sekolah"
+    };
+    const titleEl = document.getElementById("topbarPageTitle");
+    const subEl = document.getElementById("topbarPageSubtitle");
+    if (titleEl) titleEl.textContent = info.title;
+    if (subEl) subEl.textContent = info.subtitle;
 
     // Toggle tab panels
     document.querySelectorAll(".tab-panel").forEach(panel => {
@@ -188,6 +247,31 @@ class App {
     }
   }
 
+  toggleSidebar(forceState) {
+    const sidebar = document.getElementById("appSidebar");
+    const backdrop = document.getElementById("sidebarBackdrop");
+    if (!sidebar) return;
+
+    const isOpen = typeof forceState === "boolean" ? forceState : !sidebar.classList.contains("open");
+    sidebar.classList.toggle("open", isOpen);
+    if (backdrop) backdrop.classList.toggle("open", isOpen);
+    document.body.classList.toggle("sidebar-modal-open", isOpen && window.innerWidth < 1024);
+  }
+
+  toggleSidebarCollapse() {
+    const layout = document.querySelector(".app-layout");
+    if (!layout) return;
+
+    layout.classList.toggle("sidebar-collapsed");
+    const isCollapsed = layout.classList.contains("sidebar-collapsed");
+    localStorage.setItem("SMABA_SIDEBAR_COLLAPSED", isCollapsed ? "true" : "false");
+
+    const collapseText = document.querySelector(".sidebar-collapse-btn .collapse-text");
+    const collapseIcon = document.querySelector(".sidebar-collapse-btn .collapse-icon");
+    if (collapseText) collapseText.textContent = isCollapsed ? "Buka Menu" : "Ciutkan Menu";
+    if (collapseIcon) collapseIcon.textContent = isCollapsed ? "▶" : "◀";
+  }
+
   renderAll() {
     this.updateUserHeader();
     this.updateNavVisibility();
@@ -203,39 +287,56 @@ class App {
       btn.classList.toggle("active", btn.dataset.userid === user.id);
     });
 
-    // Update user info badge in top right
+    // Update user info badge in topbar
     const avatarEl = document.getElementById("headerUserAvatar");
     const nameEl = document.getElementById("headerUserName");
     const roleTagEl = document.getElementById("headerUserRole");
 
+    let roleText = "";
+    if (user.role === "siswa") {
+      roleText = `${user.kelas} • ${user.points} Poin`;
+    } else if (user.role === "guru") {
+      roleText = "Guru Pembina GLS";
+    } else if (user.id === "admin-2") {
+      roleText = "Kepala Perpustakaan SMABA";
+    } else {
+      roleText = "Pustakawan Pelaksana SMABA";
+    }
+
     if (avatarEl) avatarEl.textContent = user.avatar || "👤";
     if (nameEl) nameEl.textContent = user.name;
-    if (roleTagEl) {
-      if (user.role === "siswa") {
-        roleTagEl.textContent = `${user.kelas} • ${user.points} Poin`;
-      } else if (user.role === "guru") {
-        roleTagEl.textContent = "Guru Pembina GLS";
-      } else if (user.id === "admin-2") {
-        roleTagEl.textContent = "Kepala Perpustakaan SMABA";
-      } else {
-        roleTagEl.textContent = "Pustakawan Pelaksana SMABA";
-      }
-    }
+    if (roleTagEl) roleTagEl.textContent = roleText;
+
+    // Update user info card di dalam Sidebar
+    const sideAvatar = document.getElementById("sidebarUserAvatar");
+    const sideName = document.getElementById("sidebarUserName");
+    const sideRole = document.getElementById("sidebarUserRole");
+    if (sideAvatar) sideAvatar.textContent = user.avatar || "👤";
+    if (sideName) sideName.textContent = user.name;
+    if (sideRole) sideRole.textContent = roleText;
   }
 
   updateNavVisibility() {
     const user = window.storage.getCurrentUser();
-    const btnTeacher = document.querySelector('.nav-item-btn[data-tab="teacher"]');
-    const btnAdmin = document.querySelector('.nav-item-btn[data-tab="admin"]');
+    const isEducator = (user.role === "guru" || user.role === "admin");
+    const isAdmin = (user.role === "admin");
+
+    // Tampilkan/sembunyikan item navigasi sesuai hak akses peran
+    document.querySelectorAll('.nav-item-btn[data-tab="teacher"]').forEach(btn => {
+      btn.style.display = isEducator ? "flex" : "none";
+    });
+    document.querySelectorAll('.nav-item-btn[data-tab="admin"]').forEach(btn => {
+      btn.style.display = isAdmin ? "flex" : "none";
+    });
+
+    // Sembunyikan/tampilkan label grup Admin di sidebar
+    const adminLabel = document.getElementById("sidebarAdminGroupLabel");
+    if (adminLabel) {
+      adminLabel.style.display = isEducator ? "block" : "none";
+    }
+
+    // Perbarui badge antrean validasi guru
     const teacherBadge = document.getElementById("teacherNavBadge");
-
-    if (btnTeacher) {
-      btnTeacher.style.display = (user.role === "guru" || user.role === "admin") ? "inline-flex" : "none";
-    }
-    if (btnAdmin) {
-      btnAdmin.style.display = (user.role === "admin") ? "inline-flex" : "none";
-    }
-
     if (teacherBadge) {
       const stats = window.storage.getTeacherStats();
       teacherBadge.textContent = stats.totalToVerify;

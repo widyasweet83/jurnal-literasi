@@ -13,102 +13,157 @@
 
 <body>
 
-  <!-- ================= SITE HEADER ================= -->
-  <header class="site-header">
-    <div class="container header-inner">
-      <div class="brand-wrapper" onclick="window.app.switchTab('journals')">
-        <img src="assets/logo-sman1batu.png?v=2" alt="Logo SMAN 1 Batu" class="brand-logo-img">
-        <div class="brand-text">
-          <h1>
-            SIPUS-LIT SMABA
-            <span class="brand-badge">GLS Cendekia</span>
-          </h1>
-          <p>SMA Negeri 1 Batu • Gerakan Literasi & Perpustakaan Digital</p>
-        </div>
-      </div>
+  <div class="app-layout">
+    <!-- Backdrop overlay for mobile drawer -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="window.app.toggleSidebar(false)"></div>
 
-      <!-- Quick Role Switcher for Interactive Evaluation -->
-      <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-        <!-- Firebase Online Status Badge -->
-        <button class="firebase-status-badge" id="firebaseStatusBadge" onclick="window.firebaseService.openSettingsModal()" title="Status Koneksi Database Firebase">
-          <span class="db-status-dot unconfigured" id="firebaseStatusDot"></span>
-          <span class="db-status-text" id="firebaseStatusText">Database: Mode Lokal</span>
-          <span style="font-size: 0.85rem; opacity: 0.7;">⚙️</span>
-        </button>
-
-        <div class="role-switcher-box" title="Ganti sudut pandang akun untuk menguji fitur">
-          <button class="role-btn active" data-userid="siswa-1">
-            <span>👨‍🎓</span> Ahmad (Siswa)
-          </button>
-          <button class="role-btn" data-userid="siswa-2">
-            <span>👩‍🎓</span> Siti (Siswa)
-          </button>
-          <button class="role-btn" data-userid="guru-1">
-            <span>👩‍🏫</span> Ibu Widya (Guru)
-          </button>
-          <button class="role-btn" data-userid="admin-1">
-            <span>👩‍💼</span> Ibu Sulis (Pustakawan)
-          </button>
-          <button class="role-btn" data-userid="admin-2">
-            <span>🏛️</span> Ibu Rini (Kepala Perpus)
-          </button>
-        </div>
-
-        <!-- User profile display badge -->
-        <div class="user-profile-badge">
-          <div class="user-avatar-circle" id="headerUserAvatar">👨‍🎓</div>
-          <div class="user-info-text">
-            <div class="name" id="headerUserName">Ahmad Fauzan Pratama</div>
-            <div class="role-tag" id="headerUserRole">XI-MIPA 1 • 480 Poin</div>
+    <!-- ================= APP SIDEBAR ================= -->
+    <aside class="app-sidebar" id="appSidebar">
+      <!-- Sidebar Header (Brand & School Logo) -->
+      <div class="sidebar-header">
+        <div class="sidebar-brand" onclick="window.app.switchTab('journals')">
+          <img src="assets/logo-sman1batu.png?v=2" alt="Logo SMAN 1 Batu" class="sidebar-logo-img">
+          <div class="sidebar-brand-text">
+            <div class="sidebar-title">
+              SIPUS-LIT SMABA
+              <span class="sidebar-badge">GLS</span>
+            </div>
+            <div class="sidebar-subtitle">SMA Negeri 1 Batu</div>
           </div>
         </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- ================= NAVIGATION PILL BAR ================= -->
-  <nav class="nav-bar-container">
-    <div class="container">
-      <div class="nav-pills">
-        <button class="nav-item-btn active" data-tab="journals" id="navBtnJournals">
-          <span class="nav-icon">📖</span>
-          <span>Jurnal Literasi</span>
-        </button>
-        <button class="nav-item-btn" data-tab="students" id="navBtnStudents">
-          <span class="nav-icon">👥</span>
-          <span>Data Siswa (36 Kelas)</span>
-        </button>
-        <button class="nav-item-btn" data-tab="activities" id="navBtnActivities">
-          <span class="nav-icon">📅</span>
-          <span>Kegiatan Perpustakaan</span>
-        </button>
-        <button class="nav-item-btn" data-tab="gallery" id="navBtnGallery">
-          <span class="nav-icon">📸</span>
-          <span>Galeri Foto & Video</span>
-        </button>
-        <button class="nav-item-btn" data-tab="library" id="navBtnLibrary">
-          <span class="nav-icon">📚</span>
-          <span>Katalog & Peminjaman Buku</span>
-        </button>
-        <button class="nav-item-btn" data-tab="leaderboard" id="navBtnLeaderboard">
-          <span class="nav-icon">🏆</span>
-          <span>Papan Peringkat Literasi</span>
-        </button>
-        <button class="nav-item-btn" data-tab="teacher" id="navBtnTeacher" style="display: none;">
-          <span class="nav-icon">👩‍🏫</span>
-          <span>Validasi Guru / Admin</span>
-          <span class="nav-badge-count" id="teacherNavBadge">2</span>
-        </button>
-        <button class="nav-item-btn" data-tab="admin" id="navBtnAdmin" style="display: none;">
-          <span class="nav-icon">⚙️</span>
-          <span>Kelola Perpustakaan</span>
+        <button class="sidebar-close-btn" id="sidebarCloseBtn" onclick="window.app.toggleSidebar(false)" title="Tutup Menu">
+          ✕
         </button>
       </div>
-    </div>
-  </nav>
 
-  <!-- ================= MAIN CONTENT CONTAINER ================= -->
-  <main class="container" style="padding-top: 10px; padding-bottom: 60px;">
+      <!-- Active User Profile Card in Sidebar -->
+      <div class="sidebar-user-card" id="sidebarUserCard" title="Profil Akun Aktif">
+        <div class="sidebar-user-avatar" id="sidebarUserAvatar">👨‍🎓</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="sidebarUserName">Ahmad Fauzan Pratama</div>
+          <div class="sidebar-user-role" id="sidebarUserRole">XI-MIPA 1 • 480 Poin</div>
+        </div>
+      </div>
+
+      <!-- Sidebar Navigation Menu Items -->
+      <div class="sidebar-menu-wrapper">
+        <nav class="sidebar-nav">
+          <!-- Group 1: Menu Utama -->
+          <div class="sidebar-group-label">Menu Utama</div>
+          <button class="sidebar-nav-item nav-item-btn active" data-tab="journals" id="navBtnJournals">
+            <span class="nav-icon">📖</span>
+            <span class="nav-text">Jurnal Literasi</span>
+          </button>
+          <button class="sidebar-nav-item nav-item-btn" data-tab="leaderboard" id="navBtnLeaderboard">
+            <span class="nav-icon">🏆</span>
+            <span class="nav-text">Papan Peringkat</span>
+          </button>
+
+          <!-- Group 2: Perpustakaan & Sekolah -->
+          <div class="sidebar-group-label">Perpustakaan &amp; Sekolah</div>
+          <button class="sidebar-nav-item nav-item-btn" data-tab="students" id="navBtnStudents">
+            <span class="nav-icon">👥</span>
+            <span class="nav-text">Data Siswa (36 Rombel)</span>
+          </button>
+          <button class="sidebar-nav-item nav-item-btn" data-tab="activities" id="navBtnActivities">
+            <span class="nav-icon">📅</span>
+            <span class="nav-text">Kegiatan Perpustakaan</span>
+          </button>
+          <button class="sidebar-nav-item nav-item-btn" data-tab="gallery" id="navBtnGallery">
+            <span class="nav-icon">📸</span>
+            <span class="nav-text">Galeri Foto &amp; Video</span>
+          </button>
+          <button class="sidebar-nav-item nav-item-btn" data-tab="library" id="navBtnLibrary">
+            <span class="nav-icon">📚</span>
+            <span class="nav-text">Katalog &amp; Peminjaman</span>
+          </button>
+
+          <!-- Group 3: Portal Pendidik & Admin -->
+          <div class="sidebar-group-label" id="sidebarAdminGroupLabel" style="display: none;">Pendidik &amp; Admin</div>
+          <button class="sidebar-nav-item nav-item-btn" data-tab="teacher" id="navBtnTeacher" style="display: none;">
+            <span class="nav-icon">👩‍🏫</span>
+            <span class="nav-text">Validasi Guru / Admin</span>
+            <span class="nav-badge-count" id="teacherNavBadge">0</span>
+          </button>
+          <button class="sidebar-nav-item nav-item-btn" data-tab="admin" id="navBtnAdmin" style="display: none;">
+            <span class="nav-icon">⚙️</span>
+            <span class="nav-text">Kelola Perpustakaan</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <button class="firebase-status-badge sidebar-fb-badge" id="sidebarFirebaseStatusBadge" onclick="window.firebaseService.openSettingsModal()" title="Status Koneksi Database Firebase">
+          <span class="db-status-dot unconfigured" id="sidebarFirebaseStatusDot"></span>
+          <span class="db-status-text" id="sidebarFirebaseStatusText">Firebase: Online</span>
+        </button>
+
+        <button class="sidebar-collapse-btn" id="btnCollapseSidebar" onclick="window.app.toggleSidebarCollapse()" title="Persempit / Perlebar Sidebar">
+          <span class="collapse-icon">◀</span>
+          <span class="collapse-text">Ciutkan Menu</span>
+        </button>
+
+        <div class="sidebar-school-tag">
+          SMA Negeri 1 Batu • GLS
+        </div>
+      </div>
+    </aside>
+
+    <!-- ================= MAIN CONTENT WRAPPER ================= -->
+    <div class="app-main-content">
+      <!-- Top Bar Navigation Header -->
+      <header class="app-topbar">
+        <div class="topbar-left">
+          <button class="sidebar-toggle-btn" id="btnToggleSidebar" onclick="window.app.toggleSidebar()" title="Buka Menu Sidebar">
+            <span>☰</span>
+          </button>
+          <div class="topbar-breadcrumb">
+            <h1 class="topbar-title" id="topbarPageTitle">Jurnal Literasi Siswa</h1>
+            <p class="topbar-subtitle" id="topbarPageSubtitle">Pencatatan Reflektif &amp; Pembiasaan Membaca Harian Siswa SMAN 1 Batu</p>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <!-- Quick Role Switcher for Interactive Evaluation -->
+          <div class="role-switcher-box" title="Ganti sudut pandang akun untuk menguji fitur">
+            <button class="role-btn active" data-userid="siswa-1">
+              <span>👨‍🎓</span> Ahmad (Siswa)
+            </button>
+            <button class="role-btn" data-userid="siswa-2">
+              <span>👩‍🎓</span> Siti (Siswa)
+            </button>
+            <button class="role-btn" data-userid="guru-1">
+              <span>👩‍🏫</span> Ibu Widya (Guru)
+            </button>
+            <button class="role-btn" data-userid="admin-1">
+              <span>👩‍💼</span> Ibu Sulis (Admin)
+            </button>
+            <button class="role-btn" data-userid="admin-2">
+              <span>🏛️</span> Ibu Rini (Perpus)
+            </button>
+          </div>
+
+          <!-- Firebase Online Status Badge in Header -->
+          <button class="firebase-status-badge" id="firebaseStatusBadge" onclick="window.firebaseService.openSettingsModal()" title="Status Koneksi Database Firebase">
+            <span class="db-status-dot unconfigured" id="firebaseStatusDot"></span>
+            <span class="db-status-text" id="firebaseStatusText">Database: Mode Lokal</span>
+            <span style="font-size: 0.85rem; opacity: 0.7;">⚙️</span>
+          </button>
+
+          <!-- User profile display badge in topbar -->
+          <div class="user-profile-badge">
+            <div class="user-avatar-circle" id="headerUserAvatar">👨‍🎓</div>
+            <div class="user-info-text">
+              <div class="name" id="headerUserName">Ahmad Fauzan Pratama</div>
+              <div class="role-tag" id="headerUserRole">XI-MIPA 1 • 480 Poin</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content Container with all tabs -->
+      <main class="main-body-container">
 
     <!-- Dynamic Hero Banner per Role -->
     <div id="heroBannerContainer"></div>
@@ -703,6 +758,8 @@
         dan Kebajikan) • Berkarakter, Berprestasi, Berbudaya Literasi</p>
     </div>
   </footer>
+    </div> <!-- /.app-main-content -->
+  </div> <!-- /.app-layout -->
 
   <!-- ================= MODAL: TULIS / EDIT JURNAL LITERASI ================= -->
   <div class="modal-overlay" id="modalJournal">

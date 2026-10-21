@@ -247,6 +247,25 @@ class FirebaseService {
         <strong>${this.statusMessage}</strong>
       `;
     }
+
+    // Perbarui juga badge status di sidebar jika ada
+    const sideDot = document.getElementById("sidebarFirebaseStatusDot");
+    const sideText = document.getElementById("sidebarFirebaseStatusText");
+    const sideBadge = document.getElementById("sidebarFirebaseStatusBadge");
+    if (sideDot && sideText) {
+      sideDot.className = "db-status-dot " + this.status;
+      sideText.textContent = this.statusMessage;
+    }
+    if (sideBadge) {
+      sideBadge.classList.remove("badge-connected", "badge-error", "badge-offline", "badge-connecting");
+      if (this.status === "connected") {
+        sideBadge.classList.add("badge-connected");
+      } else if (this.status === "error") {
+        sideBadge.classList.add("badge-error");
+      } else if (this.status === "connecting") {
+        sideBadge.classList.add("badge-connecting");
+      }
+    }
   }
 
   openSettingsModal() {
