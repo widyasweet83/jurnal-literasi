@@ -765,6 +765,15 @@ const StudentsModule = {
     }
   },
 
+  clearDemoData() {
+    if (confirm("Apakah Anda yakin ingin menghapus semua data demo untuk data siswa?\n\n• Poin seluruh 1.274 siswa direset menjadi 0\n• Predikat seluruh siswa menjadi 'Pembaca Pemula'\n• Riwayat jurnal literasi demo & sirkulasi pinjaman demo dikosongkan.")) {
+      window.storage.clearStudentDemoData();
+      window.app.showToast("Semua data demo siswa berhasil dibersihkan! Seluruh siswa berstatus 0 poin.");
+      this.render();
+      window.app.renderAll();
+    }
+  },
+
   exportStudentsCsv() {
     const students = window.storage.getStudents({
       grade: this.currentGradeFilter,

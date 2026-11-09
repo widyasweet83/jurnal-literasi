@@ -17,3 +17,6 @@ $RECYCLE.BIN/
 *.sln
 *.sw?
 .gemini/
+
+# Office temporary lock files
+~$*

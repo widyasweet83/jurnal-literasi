@@ -75,7 +75,7 @@ Anda dapat langsung beralih peran akun hanya dengan mengklik tombol pengalih per
 - **Pencarian & Multi-Filter**: Pencarian cerdas nama siswa/NISN/kelas, filter tingkat (Semua, X, XI, XII), pemilahan per rombel kelas, serta filter jenis kelamin (Laki-laki & Perempuan).
 - **Aksi Cepat Siswa**: Tombol langsung untuk *"✍️ Isi Jurnal"*, *"🖨️ Cetak Portofolio"*, *"👤 Masuk Akun Siswa"*, *"✏️ Edit"*, dan *"🗑️ Hapus"*.
 - **Impor & Ekspor CSV**: Ekspor roster siswa ke format CSV berstandar UTF-8 BOM, serta fitur impor berkas CSV untuk pembaruan data berkala.
-- **Pemulihan Master**: Tombol satu-klik untuk mengembalikan data ke Master Resmi 1.274 Siswa kapan saja.
+- **Pemulihan Master & Pembersihan Demo**: Tombol satu-klik untuk mengembalikan data ke Master Resmi 1.274 Siswa serta tombol *"🧹 Hapus Data Demo"* untuk mereset seluruh poin dan riwayat ke status awal bersih (0 poin).
 
 ### 7. Portal Validasi Guru & Wali Kelas
 - Ringkasan statistik verifikasi (Pending, Disetujui, Perlu Revisi).

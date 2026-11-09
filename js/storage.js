@@ -100,6 +100,46 @@ class AppStorage {
           hasChanges = true;
         }
 
+        // Pembersihan otomatis data demo untuk data siswa (reset poin ke 0, bersihkan jurnal & sirkulasi demo)
+        if (!parsed.demoDataCleaned) {
+          if (Array.isArray(parsed.users)) {
+            parsed.users.forEach(u => {
+              if (u.role === "siswa") {
+                u.points = 0;
+                u.level = "Pembaca Pemula";
+              }
+            });
+          }
+          const demoJournalIds = new Set(["jrn-1", "jrn-2", "jrn-3", "jrn-4", "jrn-5"]);
+          if (Array.isArray(parsed.journals)) {
+            parsed.journals = parsed.journals.filter(j => !demoJournalIds.has(j.id));
+          }
+          const demoBorrowIds = new Set(["brw-1", "brw-2", "brw-3"]);
+          if (Array.isArray(parsed.borrows)) {
+            parsed.borrows = parsed.borrows.filter(b => !demoBorrowIds.has(b.id));
+          }
+          if (Array.isArray(parsed.books)) {
+            parsed.books.forEach(b => {
+              if (b.stockTotal) b.stockAvailable = b.stockTotal;
+            });
+          }
+          if (Array.isArray(parsed.activities)) {
+            parsed.activities.forEach(a => {
+              a.registeredStudents = [];
+            });
+          }
+          if (Array.isArray(parsed.galleryMedia)) {
+            parsed.galleryMedia.forEach(m => {
+              if (m.uploader && m.uploader.includes("Ahmad Fauzan")) {
+                m.uploader = "Tim Literasi SMAN 1 Batu";
+                m.uploaderRole = "guru";
+              }
+            });
+          }
+          parsed.demoDataCleaned = true;
+          hasChanges = true;
+        }
+
         // Perbarui nama pemeriksa di riwayat jurnal bawaan
         if (parsed.journals) {
           parsed.journals.forEach(j => {
@@ -273,11 +313,46 @@ class AppStorage {
     if (typeof MASTER_STUDENTS_1274 !== 'undefined' && MASTER_STUDENTS_1274.length > 0) {
       const educators = this.data.users.filter(u => u.role !== "siswa");
       const officialStudents = JSON.parse(JSON.stringify(MASTER_STUDENTS_1274));
+      officialStudents.forEach(s => {
+        s.points = 0;
+        s.level = "Pembaca Pemula";
+      });
       this.data.users = [...officialStudents, ...educators];
       this.saveData();
       return true;
     }
     return false;
+  }
+
+  clearStudentDemoData() {
+    // Reset seluruh siswa ke 0 poin dan level Pembaca Pemula
+    if (Array.isArray(this.data.users)) {
+      this.data.users.forEach(u => {
+        if (u.role === "siswa") {
+          u.points = 0;
+          u.level = "Pembaca Pemula";
+        }
+      });
+    }
+    // Kosongkan riwayat jurnal demo
+    this.data.journals = [];
+    // Kosongkan riwayat sirkulasi/pinjaman demo
+    this.data.borrows = [];
+    // Kembalikan seluruh stok buku ke kondisi penuh
+    if (Array.isArray(this.data.books)) {
+      this.data.books.forEach(b => {
+        if (b.stockTotal) b.stockAvailable = b.stockTotal;
+      });
+    }
+    // Kosongkan pendaftaran kegiatan siswa demo
+    if (Array.isArray(this.data.activities)) {
+      this.data.activities.forEach(a => {
+        a.registeredStudents = [];
+      });
+    }
+    this.data.demoDataCleaned = true;
+    this.saveData();
+    return true;
   }
 
   bulkImportStudents(studentsList) {

@@ -92,11 +92,13 @@ const JournalModule = {
       const currentUser = window.storage.getCurrentUser();
       let html = "";
 
-      ["X", "XI", "XII"].forEach(grd => {
-        const inGrade = students.filter(s => s.grade === grd || (s.kelas && s.kelas.startsWith(grd + "-")));
-        if (inGrade.length > 0) {
-          html += `<optgroup label="Tingkat ${grd} (Rombel Kelas ${grd}-1 s.d. ${grd}-12)">`;
-          inGrade.forEach(s => {
+      // Dikelompokkan per rombel kelas dari 36 kelas agar mudah dipilih
+      const classes = window.storage.getClasses();
+      classes.forEach(c => {
+        const inClass = students.filter(s => s.kelas === c.id);
+        if (inClass.length > 0) {
+          html += `<optgroup label="${c.name} (${inClass.length} Siswa)">`;
+          inClass.forEach(s => {
             const isSelected = s.id === currentUser.id;
             html += `<option value="${s.id}" ${isSelected ? 'selected' : ''}>${s.name} (${s.kelas}) - NISN: ${s.nisn}</option>`;
           });
