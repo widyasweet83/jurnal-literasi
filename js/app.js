@@ -16,6 +16,10 @@ const TAB_TITLES = {
     title: "Direktori Data Siswa (1.274 Siswa - 36 Rombel)",
     subtitle: "Data Pokok Siswa SMA Negeri 1 Batu: 12 Kelas X, 12 Kelas XI, dan 12 Kelas XII"
   },
+  teachers: {
+    title: "Direktori Data Guru & Tenaga Pendidik (58 Guru)",
+    subtitle: "Data Resmi 29 Guru PNS, 22 Guru PPPK, dan 7 Guru Non-ASN (GTT) SMAN 1 Batu"
+  },
   activities: {
     title: "Agenda Kegiatan Perpustakaan",
     subtitle: "Jadwal Gerakan Literasi Sekolah (Internal & Eksternal) SMAN 1 Batu"
@@ -64,6 +68,9 @@ class App {
     window.TeacherModule.init();
     window.AdminModule.init();
     window.StudentsModule.init();
+    if (window.TeachersModule) {
+      window.TeachersModule.init();
+    }
     if (window.ActivitiesModule) {
       window.ActivitiesModule.init();
     }
@@ -240,6 +247,8 @@ class App {
       window.TeacherModule.renderVerificationList();
     } else if (tabName === "students") {
       window.StudentsModule.render();
+    } else if (tabName === "teachers") {
+      if (window.TeachersModule) window.TeachersModule.render();
     } else if (tabName === "leaderboard") {
       this.renderLeaderboard();
     } else if (tabName === "admin") {
@@ -295,10 +304,12 @@ class App {
     let roleText = "";
     if (user.role === "siswa") {
       roleText = `${user.kelas} • ${user.points} Poin`;
-    } else if (user.role === "guru") {
-      roleText = "Guru Pembina GLS";
-    } else if (user.id === "admin-2") {
+    } else if (user.id === "guru-ks") {
+      roleText = "Kepala SMAN 1 Batu";
+    } else if (user.id === "admin-2" || user.id === "guru-perpus") {
       roleText = "Kepala Perpustakaan SMABA";
+    } else if (user.role === "guru") {
+      roleText = user.jabatan || "Guru Pembina GLS";
     } else {
       roleText = "Pustakawan Pelaksana SMABA";
     }

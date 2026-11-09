@@ -28,6 +28,15 @@ class AppStorage {
           hasChanges = true;
         }
 
+        // Migrasi otomatis data 58 guru resmi jika di storage lama belum lengkap (< 50 guru)
+        const currentTeacherCount = (parsed.users || []).filter(u => u.role === "guru").length;
+        if (currentTeacherCount < 50 && typeof MASTER_TEACHERS_58 !== 'undefined' && MASTER_TEACHERS_58.length > 0) {
+          const nonTeachers = (parsed.users || []).filter(u => u.role !== "guru");
+          const officialTeachers = JSON.parse(JSON.stringify(MASTER_TEACHERS_58));
+          parsed.users = [...nonTeachers, ...officialTeachers];
+          hasChanges = true;
+        }
+
         // Migrasi otomatis jika kelas 36 belum ada di storage lama
         if (!parsed.classes || parsed.classes.length < 36) {
           parsed.classes = JSON.parse(JSON.stringify(CLASSES_36));
@@ -361,6 +370,82 @@ class AppStorage {
     this.data.users = [...studentsList, ...educators];
     this.saveData();
     return studentsList.length;
+  }
+
+  // --- MANAJEMEN DATA GURU SMAN 1 BATU (58 GURU) ---
+  getTeachers(filter = {}) {
+    let list = (this.data.users || []).filter(u => u.role === "guru");
+    if (filter.status && filter.status !== "all") {
+      list = list.filter(g => g.status === filter.status);
+    }
+    if (filter.gender && filter.gender !== "all") {
+      list = list.filter(g => g.gender === filter.gender);
+    }
+    if (filter.search) {
+      const q = filter.search.toLowerCase();
+      list = list.filter(g =>
+        g.name.toLowerCase().includes(q) ||
+        (g.nip && g.nip.toLowerCase().includes(q)) ||
+        (g.birthInfo && g.birthInfo.toLowerCase().includes(q)) ||
+        (g.jabatan && g.jabatan.toLowerCase().includes(q))
+      );
+    }
+    return list.sort((a, b) => (a.no || 999) - (b.no || 999));
+  }
+
+  getTeacherById(teacherId) {
+    return (this.data.users || []).find(u => u.id === teacherId && u.role === "guru");
+  }
+
+  addTeacher(teacherData) {
+    const newId = "guru-usr-" + Date.now();
+    const newTeacher = {
+      id: newId,
+      role: "guru",
+      no: this.getTeachers().length + 1,
+      name: teacherData.name.trim(),
+      nip: teacherData.nip ? teacherData.nip.trim() : "-",
+      birthInfo: teacherData.birthInfo ? teacherData.birthInfo.trim() : "-",
+      gender: teacherData.gender || "P",
+      status: teacherData.status || "PNS",
+      jabatan: teacherData.jabatan ? teacherData.jabatan.trim() : "Guru Mata Pelajaran & Pembina Literasi",
+      avatar: (teacherData.gender === "L") ? "👨‍🏫" : "👩‍🏫",
+      totalVerified: 0,
+      ...teacherData
+    };
+    this.data.users.push(newTeacher);
+    this.saveData();
+    return newTeacher;
+  }
+
+  updateTeacher(teacherId, patch) {
+    const teacher = this.getTeacherById(teacherId);
+    if (teacher) {
+      Object.assign(teacher, patch);
+      if (patch.gender) {
+        teacher.avatar = (patch.gender === "L") ? "👨‍🏫" : "👩‍🏫";
+      }
+      this.saveData();
+      return teacher;
+    }
+    return null;
+  }
+
+  deleteTeacher(teacherId) {
+    this.data.users = (this.data.users || []).filter(u => u.id !== teacherId);
+    this.saveData();
+    return true;
+  }
+
+  resetTeachersToOfficial() {
+    if (typeof MASTER_TEACHERS_58 !== 'undefined' && MASTER_TEACHERS_58.length > 0) {
+      const nonTeachers = (this.data.users || []).filter(u => u.role !== "guru");
+      const officialTeachers = JSON.parse(JSON.stringify(MASTER_TEACHERS_58));
+      this.data.users = [...nonTeachers, ...officialTeachers];
+      this.saveData();
+      return true;
+    }
+    return false;
   }
 
   getClassStats(classId) {

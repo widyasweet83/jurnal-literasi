@@ -77,21 +77,31 @@ Anda dapat langsung beralih peran akun hanya dengan mengklik tombol pengalih per
 - **Impor & Ekspor CSV**: Ekspor roster siswa ke format CSV berstandar UTF-8 BOM, serta fitur impor berkas CSV untuk pembaruan data berkala.
 - **Pemulihan Master & Pembersihan Demo**: Tombol satu-klik untuk mengembalikan data ke Master Resmi 1.274 Siswa serta tombol *"🧹 Hapus Data Demo"* untuk mereset seluruh poin dan riwayat ke status awal bersih (0 poin).
 
-### 7. Portal Validasi Guru & Wali Kelas
+### 7. Direktori Data Guru & Tenaga Pendidik SMAN 1 Batu (58 Guru)
+- **Data Resmi Pendidik SMABA**: Master 58 guru dan tenaga pendidik yang terdiri dari 29 Guru PNS, 22 Guru PPPK, dan 7 Guru Non-ASN (GTT).
+- **Profil Pendidik Lengkap**: Dilengkapi informasi NIP resmi, tempat dan tanggal lahir, jenis kelamin, serta jabatan (Kepala Sekolah, Kepala Perpustakaan, Guru Pembina GLS, dan Guru Mata Pelajaran).
+- **Pencarian Cepat & Multi-Filter**: Pencarian cerdas nama guru/NIP/tempat lahir, filter status kepegawaian (PNS, PPPK, GTT), dan filter jenis kelamin (Laki-laki & Perempuan).
+- **Aksi Cepat Pendidik**:
+  - *"👤 Masuk"*: Langsung beralih akun ke guru yang dipilih dan membuka Portal Validasi Guru untuk memverifikasi jurnal siswa.
+  - *"✏️ Edit"*: Mengubah data identitas guru.
+  - *"🗑️ Hapus"*: Menghapus data guru dari sistem.
+- **Ekspor CSV & Pemulihan Master**: Ekspor data seluruh guru ke spreadsheet CSV berstandar UTF-8 BOM dan pemulihan master satu-klik ke data resmi 58 guru SMAN 1 Batu.
+
+### 8. Portal Validasi Guru & Wali Kelas
 - Ringkasan statistik verifikasi (Pending, Disetujui, Perlu Revisi).
 - Filter antrean berdasarkan rombel/kelas siswa dari 36 rombel dan status.
 - Modal penilaian interaktif dengan skor numerik dan *quick-feedback chips* (analitis, kontekstual karakter, revisi panjang ulasan).
 - Fitur *"Setujui Semua Pending"* secara terpadu.
 - Ekspor rekapitulasi nilai literasi ke file spreadsheet CSV.
 
-### 8. Panel Pustakawan & Manajemen Data
+### 9. Panel Pustakawan & Manajemen Data
 - Tambah, ubah, dan hapus koleksi buku perpustakaan.
 - Tabel pemantauan sirkulasi peminjaman siswa dan tanggal jatuh tempo.
 - **Cadangkan Data (Backup)**: Unduh seluruh basis data ke file `.json`.
 - **Pulihkan Data (Restore)**: Unggah file `.json` untuk mengembalikan data kapan saja.
 - **Reset Data**: Kembalikan ke pengaturan awal demo SMAN 1 Batu.
 
-### 9. Database Online Multi-Perangkat (Firebase Realtime Cloud)
+### 10. Database Online Multi-Perangkat (Firebase Realtime Cloud)
 - **Sinkronisasi Realtime Dua Arah**: Jurnal bacaan siswa, validasi guru, katalog buku, dan peminjaman tersimpan di Firebase Realtime Database dan otomatis terupdate secara langsung di seluruh laptop/HP pengguna.
 - **Dual-Mode Fleksibel (Cloud & Lokal)**: Aplikasi tetap dapat berjalan mulus secara offline dengan *LocalStorage* saat belum dihubungkan ke Firebase.
 - **Indikator Status Interaktif**: Status koneksi tampil di bilah atas aplikasi (🟢 *Online Firebase* / 🟡 *Mode Lokal*).
@@ -111,6 +121,7 @@ d:\APLIKASI PERPUSTAKAAN\
 │
 ├── assets/
 │   ├── data_siswa.csv      # Berkas CSV master 1.274 data siswa resmi SMAN 1 Batu
+│   ├── data_guru.csv       # Berkas CSV master 58 data guru resmi SMAN 1 Batu
 │   ├── logo-sman1batu.png  # Logo resmi SMA Negeri 1 Batu (transparan)
 │   └── sman1batu-logo.svg  # Logo vektor resmi SMAN 1 Batu
 │
@@ -120,9 +131,11 @@ d:\APLIKASI PERPUSTAKAAN\
 └── js/
     ├── firebase-config.js  # Layanan & konfigurasi sinkronisasi Firebase Realtime Database
     ├── students-data.js    # Basis data 1.274 siswa resmi 36 rombel SMAN 1 Batu
+    ├── teachers-data.js    # Basis data 58 guru & tenaga pendidik resmi SMAN 1 Batu
     ├── data.js             # Data master 36 kelas, profil sekolah, pengguna 3 role & katalog buku
     ├── storage.js          # Pengontrol LocalStorage, kalkulasi poin, registrasi & ekspor
     ├── students.js         # Modul direktori 1.274 siswa (paginasi, filter JK, edit, switch akun)
+    ├── teachers.js         # Modul direktori 58 guru (filter PNS/PPPK/GTT, edit, switch akun guru)
     ├── activities.js       # Modul agenda kegiatan perpustakaan internal & eksternal
     ├── journal.js          # Modul formulir jurnal literasi siswa & verifikasi
     ├── library.js          # Modul katalog perpustakaan OPAC & peminjaman

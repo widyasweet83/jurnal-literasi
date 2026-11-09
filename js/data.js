@@ -49,6 +49,27 @@ const SAMPLE_STUDENTS = (typeof MASTER_STUDENTS_1274 !== 'undefined' && Array.is
   ? MASTER_STUDENTS_1274
   : [];
 
+// Inisialisasi Data Resmi 58 Guru & Tenaga Pendidik SMAN 1 Batu
+// 29 Guru PNS, 22 Guru PPPK, 7 Guru Non-ASN (GTT)
+const SAMPLE_TEACHERS = (typeof MASTER_TEACHERS_58 !== 'undefined' && Array.isArray(MASTER_TEACHERS_58) && MASTER_TEACHERS_58.length > 0)
+  ? MASTER_TEACHERS_58.map(g => {
+      if (g.id === "guru-1") {
+        return { ...g, kelasBinaan: CLASSES_36.map(c => c.id) };
+      }
+      return g;
+    })
+  : [
+      {
+        id: "guru-1",
+        role: "guru",
+        name: "Ibu Widya Ningsih, S.Kom, Gr",
+        nip: "19830912 202221 2 036",
+        jabatan: "Guru Pembina GLS & Literasi Digital SMAN 1 Batu",
+        kelasBinaan: CLASSES_36.map(c => c.id),
+        avatar: "👩‍🏫"
+      }
+    ];
+
 const INITIAL_DATA = {
   school: {
     name: "SMA Negeri 1 Batu",
@@ -68,15 +89,7 @@ const INITIAL_DATA = {
 
   users: [
     ...SAMPLE_STUDENTS,
-    {
-      id: "guru-1",
-      role: "guru",
-      name: "Ibu Widya Ningsih, S.Kom, Gr",
-      nip: "198506142010012015",
-      jabatan: "Guru Pembina GLS & Literasi Digital SMAN 1 Batu",
-      kelasBinaan: CLASSES_36.map(c => c.id), // Membina seluruh 36 kelas
-      avatar: "👩‍🏫"
-    },
+    ...SAMPLE_TEACHERS,
     {
       id: "admin-1",
       role: "admin",
@@ -89,7 +102,7 @@ const INITIAL_DATA = {
       id: "admin-2",
       role: "admin",
       name: "Ibu Rini Wahyuningsih, S.Pd",
-      nip: "197805122005012008",
+      nip: "19731012 200801 2 005",
       jabatan: "Kepala Perpustakaan SMAN 1 Batu",
       avatar: "🏛️"
     }

@@ -66,6 +66,11 @@
             <span class="nav-text">Data Siswa (1.274)</span>
             <span class="nav-badge-count" id="studentsNavBadge" style="background: var(--primary-600); color: white;">1.274</span>
           </button>
+          <button class="sidebar-nav-item nav-item-btn" data-tab="teachers" id="navBtnTeachers">
+            <span class="nav-icon">👨‍🏫</span>
+            <span class="nav-text">Data Guru (58)</span>
+            <span class="nav-badge-count" id="teachersNavBadge" style="background: #0284c7; color: white;">58</span>
+          </button>
           <button class="sidebar-nav-item nav-item-btn" data-tab="activities" id="navBtnActivities">
             <span class="nav-icon">📅</span>
             <span class="nav-text">Kegiatan Perpustakaan</span>
@@ -139,6 +144,9 @@
             </button>
             <button class="role-btn" data-userid="guru-1">
               <span>👩‍🏫</span> Ibu Widya (Guru)
+            </button>
+            <button class="role-btn" data-userid="guru-ks">
+              <span>👨‍🏫</span> Bpk Anto (Kepsek)
             </button>
             <button class="role-btn" data-userid="admin-1">
               <span>👩‍💼</span> Ibu Sulis (Admin)
@@ -282,6 +290,76 @@
               </tr>
             </thead>
             <tbody id="studentsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         TAB: DIREKTORI DATA GURU SMAN 1 BATU (58 GURU)
+         ======================================================== -->
+    <section class="tab-panel" id="tab-teachers" style="display: none;">
+      <div class="section-header-box">
+        <div>
+          <h2 class="section-title">
+            <span>👨‍🏫</span> Direktori Data Guru &amp; Tenaga Pendidik SMAN 1 Batu (58 Guru)
+          </h2>
+          <p style="color: var(--text-muted); font-size: 0.86rem; margin-top: 4px;">
+            29 Guru PNS, 22 Guru PPPK, dan 7 Guru Non-ASN (GTT). Pendidik pembina literasi, wali kelas, dan guru mata pelajaran SMAN 1 Batu.
+          </p>
+        </div>
+        <div class="filter-bar">
+          <input type="text" class="input-search" id="searchTeacherInput"
+            placeholder="Cari nama guru, NIP, tempat lahir, atau jabatan...">
+          <select class="form-control" id="filterTeacherStatus" style="width: auto; padding: 7px 12px; font-size: 0.84rem;" title="Filter berdasarkan status kepegawaian">
+            <option value="all">Semua Status Kepegawaian</option>
+            <option value="PNS">PNS (Pegawai Negeri Sipil)</option>
+            <option value="PPPK">PPPK (P3K)</option>
+            <option value="GTT">GTT / Non-ASN</option>
+          </select>
+          <select class="form-control" id="filterTeacherGender" style="width: auto; padding: 7px 12px; font-size: 0.84rem;" title="Filter berdasarkan jenis kelamin">
+            <option value="all">Semua JK (L &amp; P)</option>
+            <option value="L">👨‍🏫 Laki-laki</option>
+            <option value="P">👩‍🏫 Perempuan</option>
+          </select>
+          <button class="btn btn-secondary" onclick="TeachersModule.exportTeachersCsv()" title="Unduh data guru ke CSV">
+            📥 Ekspor CSV
+          </button>
+          <button class="btn btn-primary" onclick="TeachersModule.openAddTeacherModal()" title="Tambah guru manual">
+            ➕ Tambah Guru
+          </button>
+          <button class="btn btn-sm" style="background: #f8fafc; border: 1px solid #cbd5e1; color: #475569;" onclick="TeachersModule.restoreOfficialTeachers()" title="Kembalikan ke Master Resmi 58 Guru SMAN 1 Batu">
+            🔄 Pulihkan Master Guru
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Summary Stats Cards for Teachers -->
+      <div class="stats-grid" id="teacherSummaryStats" style="margin-bottom: 24px;"></div>
+
+      <!-- Teacher Roster Table Card -->
+      <div class="leaderboard-card">
+        <div class="section-header-box" style="margin-bottom: 14px;">
+          <h3 style="font-size: 1.12rem; color: var(--primary-900);">
+            📋 Daftar Guru &amp; Tenaga Pendidik SMAN 1 Batu
+          </h3>
+          <span class="badge-status badge-approved" id="teacherListCountBadge">58 Guru</span>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="leaderboard-table">
+            <thead>
+              <tr>
+                <th style="width: 44px; text-align: center;">No</th>
+                <th>NIP / Identitas</th>
+                <th>Nama Guru &amp; Gelar</th>
+                <th>Tempat &amp; Tanggal Lahir</th>
+                <th>Status</th>
+                <th>Jabatan / Tugas</th>
+                <th style="width: 175px; text-align: center;">Tindakan</th>
+              </tr>
+            </thead>
+            <tbody id="teachersTableBody"></tbody>
           </table>
         </div>
       </div>
@@ -1197,6 +1275,113 @@
     </div>
   </div>
 
+  <!-- ================= MODAL: TAMBAH DATA GURU ================= -->
+  <div class="modal-overlay" id="modalAddTeacher">
+    <div class="modal-content" style="max-width: 540px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Tambah Guru / Tenaga Pendidik Baru</h3>
+        <button class="btn-close-modal" onclick="window.app.closeModal('modalAddTeacher')">✕</button>
+      </div>
+      <form id="formAddTeacher">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="addTeacherName">Nama Lengkap &amp; Gelar *</label>
+            <input type="text" class="form-control" id="addTeacherName" required placeholder="Contoh: Drs. Bambang Sutrisno, M.Pd.">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="addTeacherNip">NIP</label>
+              <input type="text" class="form-control" id="addTeacherNip" placeholder="Contoh: 19800101 200501 1 001">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="addTeacherGender">Jenis Kelamin *</label>
+              <select class="form-control" id="addTeacherGender" required>
+                <option value="L">👨‍🏫 Laki-laki (L)</option>
+                <option value="P">👩‍🏫 Perempuan (P)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="addTeacherStatus">Status Kepegawaian *</label>
+              <select class="form-control" id="addTeacherStatus" required>
+                <option value="PNS">PNS (Pegawai Negeri Sipil)</option>
+                <option value="PPPK">PPPK (P3K)</option>
+                <option value="GTT">GTT / Non-ASN</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="addTeacherBirth">Tempat &amp; Tgl Lahir</label>
+              <input type="text" class="form-control" id="addTeacherBirth" placeholder="Contoh: Malang, 15-05-1980">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="addTeacherJabatan">Jabatan / Tugas</label>
+            <input type="text" class="form-control" id="addTeacherJabatan" value="Guru Mata Pelajaran & Pembina Literasi" placeholder="Contoh: Guru Matematika / Wali Kelas">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="window.app.closeModal('modalAddTeacher')">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan Guru</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: EDIT DATA GURU ================= -->
+  <div class="modal-overlay" id="modalEditTeacher">
+    <div class="modal-content" style="max-width: 540px;">
+      <div class="modal-header">
+        <h3 class="modal-title">✏️ Ubah Data Guru / Tenaga Pendidik</h3>
+        <button class="btn-close-modal" onclick="window.app.closeModal('modalEditTeacher')">✕</button>
+      </div>
+      <form id="formEditTeacher">
+        <input type="hidden" id="editTeacherId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="editTeacherName">Nama Lengkap &amp; Gelar *</label>
+            <input type="text" class="form-control" id="editTeacherName" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="editTeacherNip">NIP</label>
+              <input type="text" class="form-control" id="editTeacherNip">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="editTeacherGender">Jenis Kelamin *</label>
+              <select class="form-control" id="editTeacherGender" required>
+                <option value="L">👨‍🏫 Laki-laki (L)</option>
+                <option value="P">👩‍🏫 Perempuan (P)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="editTeacherStatus">Status Kepegawaian *</label>
+              <select class="form-control" id="editTeacherStatus" required>
+                <option value="PNS">PNS (Pegawai Negeri Sipil)</option>
+                <option value="PPPK">PPPK (P3K)</option>
+                <option value="GTT">GTT / Non-ASN</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="editTeacherBirth">Tempat &amp; Tgl Lahir</label>
+              <input type="text" class="form-control" id="editTeacherBirth">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editTeacherJabatan">Jabatan / Tugas</label>
+            <input type="text" class="form-control" id="editTeacherJabatan">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="window.app.closeModal('modalEditTeacher')">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- ================= MODAL: IMPOR DATA SISWA (CSV) ================= -->
   <div class="modal-overlay" id="modalImportStudents">
     <div class="modal-content" style="max-width: 580px;">
@@ -1617,9 +1802,11 @@
   <!-- ================= SCRIPTS ================= -->
   <script src="js/firebase-config.js"></script>
   <script src="js/students-data.js"></script>
+  <script src="js/teachers-data.js"></script>
   <script src="js/data.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/students.js"></script>
+  <script src="js/teachers.js"></script>
   <script src="js/activities.js"></script>
   <script src="js/gallery.js"></script>
   <script src="js/journal.js"></script>
