@@ -13,8 +13,8 @@ const TAB_TITLES = {
     subtitle: "Gamifikasi, Podium Juara & Peringkat Pembaca Teraktif SMABA"
   },
   students: {
-    title: "Direktori Data Siswa (36 Rombel)",
-    subtitle: "12 Kelas X, 12 Kelas XI, dan 12 Kelas XII SMAN 1 Batu"
+    title: "Direktori Data Siswa (1.274 Siswa - 36 Rombel)",
+    subtitle: "Data Pokok Siswa SMA Negeri 1 Batu: 12 Kelas X, 12 Kelas XI, dan 12 Kelas XII"
   },
   activities: {
     title: "Agenda Kegiatan Perpustakaan",
@@ -558,8 +558,9 @@ class App {
       `;
     }
 
-    // Tabel Peringkat Lengkap
-    tableBody.innerHTML = leaderboardData.map((s, idx) => `
+    // Tabel Peringkat (Top 100 Pembaca Teraktif)
+    const displayList = leaderboardData.slice(0, 100);
+    tableBody.innerHTML = displayList.map((s, idx) => `
       <tr>
         <td style="font-weight: 800; color: ${idx === 0 ? '#f59e0b' : (idx === 1 ? '#64748b' : (idx === 2 ? '#b45309' : '#0f172a'))};">
           #${idx + 1}
@@ -579,7 +580,7 @@ class App {
             ${s.level}
           </span>
         </td>
-        <td><strong>${s.stats.approvedJournals}</strong> Jurnal (${s.stats.totalPagesRead} Hal)</td>
+        <td><strong>${s.stats.approvedJournals}</strong> Jurnal (${s.stats.totalPagesRead || 0} Hal)</td>
         <td style="font-weight: 800; color: var(--primary-700); font-size: 1rem;">
           ${s.points} Pts
         </td>

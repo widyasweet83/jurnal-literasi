@@ -63,7 +63,8 @@
           <div class="sidebar-group-label">Perpustakaan &amp; Sekolah</div>
           <button class="sidebar-nav-item nav-item-btn" data-tab="students" id="navBtnStudents">
             <span class="nav-icon">👥</span>
-            <span class="nav-text">Data Siswa (36 Rombel)</span>
+            <span class="nav-text">Data Siswa (1.274)</span>
+            <span class="nav-badge-count" id="studentsNavBadge" style="background: var(--primary-600); color: white;">1.274</span>
           </button>
           <button class="sidebar-nav-item nav-item-btn" data-tab="activities" id="navBtnActivities">
             <span class="nav-icon">📅</span>
@@ -128,10 +129,13 @@
           <!-- Quick Role Switcher for Interactive Evaluation -->
           <div class="role-switcher-box" title="Ganti sudut pandang akun untuk menguji fitur">
             <button class="role-btn active" data-userid="siswa-1">
-              <span>👨‍🎓</span> Ahmad (Siswa)
+              <span>👩‍🎓</span> Ailin (X-1)
             </button>
-            <button class="role-btn" data-userid="siswa-2">
-              <span>👩‍🎓</span> Siti (Siswa)
+            <button class="role-btn" data-userid="siswa-428">
+              <span>👩‍🎓</span> Adelia (XI-1)
+            </button>
+            <button class="role-btn" data-userid="siswa-851">
+              <span>👨‍🎓</span> Aden (XII-1)
             </button>
             <button class="role-btn" data-userid="guru-1">
               <span>👩‍🏫</span> Ibu Widya (Guru)
@@ -141,6 +145,9 @@
             </button>
             <button class="role-btn" data-userid="admin-2">
               <span>🏛️</span> Ibu Rini (Perpus)
+            </button>
+            <button class="role-btn role-btn-more" onclick="StudentsModule.openSwitchStudentModal()" title="Cari &amp; pilih salah satu dari 1.274 siswa resmi SMAN 1 Batu">
+              <span>🔍</span> Pilih Siswa (1.274)
             </button>
           </div>
 
@@ -205,31 +212,41 @@
       <div class="section-header-box">
         <div>
           <h2 class="section-title">
-            <span>👥</span> Direktori Data Siswa 36 Rombel Kelas SMAN 1 Batu
+            <span>👥</span> Direktori Data Siswa SMAN 1 Batu (1.274 Siswa - 36 Rombel)
           </h2>
           <p style="color: var(--text-muted); font-size: 0.86rem; margin-top: 4px;">
-            12 Kelas X, 12 Kelas XI, dan 12 Kelas XII. Siswa dapat mengisi jurnal literasi langsung tanpa perlu ijin
-            awal.
+            12 Kelas X (427 Siswa), 12 Kelas XI (423 Siswa), dan 12 Kelas XII (424 Siswa). Seluruh siswa dapat langsung mengisi jurnal literasi tanpa hambatan.
           </p>
         </div>
         <div class="filter-bar">
           <input type="text" class="input-search" id="searchStudentInput"
             placeholder="Cari nama siswa, NISN, atau kelas...">
-          <button class="btn btn-secondary" onclick="StudentsModule.exportStudentsCsv()">
+          <select class="form-control" id="filterStudentGender" style="width: auto; padding: 7px 12px; font-size: 0.84rem;" title="Filter berdasarkan jenis kelamin">
+            <option value="all">Semua JK (L &amp; P)</option>
+            <option value="L">👨‍🎓 Laki-laki</option>
+            <option value="P">👩‍🎓 Perempuan</option>
+          </select>
+          <button class="btn btn-secondary" onclick="StudentsModule.exportStudentsCsv()" title="Unduh data siswa saat ini ke CSV">
             📥 Ekspor CSV
           </button>
-          <button class="btn btn-primary" onclick="StudentsModule.openAddStudentModal()">
-            ➕ Tambah Siswa Baru
+          <button class="btn btn-outline" onclick="StudentsModule.openImportCsvModal()" title="Unggah / Impor data siswa dari berkas CSV">
+            📤 Impor CSV
+          </button>
+          <button class="btn btn-primary" onclick="StudentsModule.openAddStudentModal()" title="Tambah siswa manual">
+            ➕ Tambah Siswa
+          </button>
+          <button class="btn btn-sm" style="background: #f8fafc; border: 1px solid #cbd5e1; color: #475569;" onclick="StudentsModule.restoreOfficialRoster()" title="Kembalikan ke Master Resmi 1.274 Siswa SMAN 1 Batu">
+            🔄 Pulihkan Master
           </button>
         </div>
       </div>
 
       <!-- Grade Filter Tabs: Semua, Tingkat X, Tingkat XI, Tingkat XII -->
       <div class="grade-tabs-container">
-        <button class="grade-filter-btn active" data-grade="all">🏫 Semua 36 Kelas</button>
-        <button class="grade-filter-btn" data-grade="X">Tingkat X (12 Rombel)</button>
-        <button class="grade-filter-btn" data-grade="XI">Tingkat XI (12 Rombel)</button>
-        <button class="grade-filter-btn" data-grade="XII">Tingkat XII (12 Rombel)</button>
+        <button class="grade-filter-btn active" data-grade="all">🏫 Semua 36 Kelas (1.274)</button>
+        <button class="grade-filter-btn" data-grade="X">Tingkat X (427 Siswa)</button>
+        <button class="grade-filter-btn" data-grade="XI">Tingkat XI (423 Siswa)</button>
+        <button class="grade-filter-btn" data-grade="XII">Tingkat XII (424 Siswa)</button>
       </div>
 
       <!-- 36 Class Selector Pills Container -->
@@ -1128,6 +1145,119 @@
     </div>
   </div>
 
+  <!-- ================= MODAL: EDIT DATA SISWA ================= -->
+  <div class="modal-overlay" id="modalEditStudent">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">✏️ Edit Data Siswa</h3>
+        <button class="btn-close-modal" onclick="window.app.closeModal('modalEditStudent')">✕</button>
+      </div>
+      <form id="formEditStudent">
+        <input type="hidden" id="editStudentId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="editStudentName">Nama Lengkap Siswa *</label>
+            <input type="text" class="form-control" id="editStudentName" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="editStudentNisn">NISN Siswa</label>
+              <input type="text" class="form-control" id="editStudentNisn">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="editStudentGender">Jenis Kelamin</label>
+              <select class="form-control" id="editStudentGender">
+                <option value="L">Laki-laki (👨‍🎓)</option>
+                <option value="P">Perempuan (👩‍🎓)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="editStudentClassSelect">Kelas (36 Rombel) *</label>
+              <select class="form-control" id="editStudentClassSelect" required></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="editStudentPoints">Poin Literasi</label>
+              <input type="number" class="form-control" id="editStudentPoints" min="0">
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary"
+            onclick="window.app.closeModal('modalEditStudent')">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: IMPOR DATA SISWA (CSV) ================= -->
+  <div class="modal-overlay" id="modalImportStudents">
+    <div class="modal-content" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3 class="modal-title">📤 Impor &amp; Sinkronisasi Data Siswa (CSV)</h3>
+        <button class="btn-close-modal" onclick="window.app.closeModal('modalImportStudents')">✕</button>
+      </div>
+      <form id="formImportCsv">
+        <div class="modal-body">
+          <div style="background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; padding: 12px 14px; border-radius: var(--radius-md); font-size: 0.84rem; margin-bottom: 16px;">
+            <strong>Format CSV yang Didukung:</strong>
+            <p style="margin: 4px 0 0 0; font-family: monospace;">No,NISN,Nama Siswa,Kelas,Jenis Kelamin</p>
+            <p style="margin: 4px 0 0 0; font-size: 0.78rem; opacity: 0.85;">Contoh baris: <code>1,0107558631,Ailin Chaya Agatha,X-1,P</code></p>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="csvFileInput">Pilih Berkas CSV Daftar Siswa:</label>
+            <input type="file" class="form-control" id="csvFileInput" accept=".csv,text/csv" required>
+            <div class="form-hint">Daftar siswa dalam aplikasi akan diperbarui dengan data baru dari CSV.</div>
+          </div>
+
+          <div style="margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-size: 0.8rem; color: var(--text-muted);">
+              Ingin mengembalikan ke data awal 1.274 siswa?
+            </div>
+            <button type="button" class="btn btn-sm btn-outline" onclick="StudentsModule.restoreOfficialRoster(); window.app.closeModal('modalImportStudents');">
+              🔄 Pulihkan 1.274 Siswa Resmi
+            </button>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary"
+            onclick="window.app.closeModal('modalImportStudents')">Batal</button>
+          <button type="submit" class="btn btn-primary">Mulai Impor CSV</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: CARI & GANTI AKUN SISWA (1.274 SISWA) ================= -->
+  <div class="modal-overlay" id="modalSwitchStudent">
+    <div class="modal-content" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3 class="modal-title">🔍 Pilih Akun Siswa (1.274 Siswa Resmi)</h3>
+        <button class="btn-close-modal" onclick="window.app.closeModal('modalSwitchStudent')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group" style="margin-bottom: 12px;">
+          <input type="text" class="input-search" id="searchSwitchStudentInput"
+            placeholder="Ketik nama siswa, NISN, atau kelas (misal: Ailin, 0107558631, X-1)..."
+            style="width: 100%; padding: 10px 14px; font-size: 0.92rem;"
+            oninput="StudentsModule.renderStudentPickerList(this.value)">
+        </div>
+        <div id="switchStudentCountNote" style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px;"></div>
+        <div class="student-picker-list" id="switchStudentListContainer" style="max-height: 380px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 6px;"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="window.app.closeModal('modalSwitchStudent')">Tutup</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= MODAL: DETAIL KEGIATAN PERPUSTAKAAN ================= -->
   <div class="modal-overlay" id="modalActivityDetail">
     <div class="modal-content" style="max-width: 680px;">
@@ -1484,6 +1614,7 @@
 
   <!-- ================= SCRIPTS ================= -->
   <script src="js/firebase-config.js"></script>
+  <script src="js/students-data.js"></script>
   <script src="js/data.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/students.js"></script>

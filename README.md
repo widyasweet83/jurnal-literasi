@@ -20,15 +20,17 @@ Aplikasi ini dapat langsung dijalankan di semua peramban modern (Google Chrome, 
 ---
 
 ## 👥 Pengguna Demo & Peran (Multi-Role)
-Anda dapat langsung beralih peran akun hanya dengan mengklik tombol pengalih peran (*Role Switcher*) di bilah atas aplikasi:
+Anda dapat langsung beralih peran akun hanya dengan mengklik tombol pengalih peran (*Role Switcher*) di bilah atas aplikasi, atau memilih dari **1.274 Siswa Resmi**:
 
 | Peran | Nama Akun | Keterangan / Akses |
 |---|---|---|
-| **Siswa 1** | **Ahmad Fauzan Pratama** (XI-1) | Duta Literasi SMABA (480 Poin). Mengisi jurnal bacaan, meminjam buku fisik, cetak lembar portofolio resmi. |
-| **Siswa 2** | **Siti Nur Aini** (XI-2) | Kutu Buku Aktif (320 Poin). Membaca novel sastra klasik dan sejarah. |
-| **Siswa 3** | **Bima Raditya Putra** (X-1) | Siswa kelas X dengan jurnal yang memerlukan revisi untuk diuji perbaikannya. |
-| **Guru** | **Ibu Widya Ningsih, S.Kom, Gr** | Guru Pembina GLS & Literasi Digital. Memeriksa jurnal, memberi skor (0-100), masukan apresiatif/revisi, dan ekspor rekap ke CSV. |
-| **Pustakawan/Admin** | **Ibu Sulis Setiasih** | Kepala Pustakawan & Admin. Mengelola master data buku, 36 rombel kelas siswa, sirkulasi peminjaman, serta cadangan data (JSON). |
+| **Siswa 1** | **Ailin Chaya Agatha** (X-1) | Siswa resmi Kelas X-1 (450 Pts). Mengisi jurnal bacaan, meminjam buku fisik, cetak lembar portofolio resmi. |
+| **Siswa 2** | **Adelia Cahyani** (XI-1) | Siswa resmi Kelas XI-1 (475 Pts). Duta Literasi SMABA, aktif membaca karya sastra dan sejarah. |
+| **Siswa 3** | **Aden Qushai Assyidiq** (XII-1) | Siswa resmi Kelas XII-1 (520 Pts). Peringkat puncak pembiasaan literasi sekolah. |
+| **Guru** | **Ibu Widya Ningsih, S.Kom, Gr** | Guru Pembina GLS & Literasi Digital. Memeriksa jurnal seluruh siswa, memberi skor (0-100), feedback, dan ekspor rekap CSV. |
+| **Pustakawan/Admin** | **Ibu Sulis Setiasih** | Pustakawan Pelaksana & Admin. Mengelola katalog buku, direktori 1.274 siswa, sirkulasi peminjaman, serta backup JSON. |
+| **Kepala Perpus** | **Ibu Rini Wahyuningsih, S.Pd** | Kepala Perpustakaan SMAN 1 Batu. Pengawasan kebijakan literasi dan database sekolah. |
+| **Pilih Siswa** | **1.274 Siswa Resmi** | Tombol 🔍 *"Pilih Siswa (1.274)"* untuk mencari & beralih instan ke akun siswa mana pun. |
 
 ---
 
@@ -67,10 +69,13 @@ Anda dapat langsung beralih peran akun hanya dengan mengklik tombol pengalih per
 - **Fitur Interaktif Siswa**: Pendaftaran langsung peserta kegiatan secara mandiri, kuota peserta otomatis, dan perolehan bonus poin literasi (+30 hingga +50 poin).
 - **Manajemen Guru & Pustakawan**: Tambah agenda kegiatan baru, filter status (Akan Datang, Berlangsung, Selesai), edit rincian, hapus agenda, dan ekspor jadwal kegiatan ke CSV.
 
-### 6. Direktori Data Siswa 36 Rombel Kelas
-- **Cakupan Lengkap**: 12 Kelas X (X-1 s.d. X-12), 12 Kelas XI (XI-1 s.d. XI-12), dan 12 Kelas XII (XII-1 s.d. XII-12).
-- **Akses Pengisian Langsung**: Siswa dapat langsung mengisi jurnal literasi bacaan tanpa perlu ijin awal, dengan tahap validasi/persetujuan oleh guru/pustakawan.
-- **Filter Fleksibel**: Pemilahan data berdasarkan tingkat kelas, rombel individual, pencarian NISN/nama siswa, dan ekspor roster siswa ke CSV.
+### 6. Direktori Data Siswa 36 Rombel Kelas (1.274 Siswa Resmi)
+- **Cakupan Lengkap**: Master data 1.274 siswa resmi SMAN 1 Batu tersebar di 12 Kelas X (427 siswa), 12 Kelas XI (423 siswa), dan 12 Kelas XII (424 siswa).
+- **Paginasi Cepat & Responsif**: Menampilkan data dengan opsi 25, 50, 100, atau semua siswa per halaman agar navigasi tetap ringan di HP maupun laptop.
+- **Pencarian & Multi-Filter**: Pencarian cerdas nama siswa/NISN/kelas, filter tingkat (Semua, X, XI, XII), pemilahan per rombel kelas, serta filter jenis kelamin (Laki-laki & Perempuan).
+- **Aksi Cepat Siswa**: Tombol langsung untuk *"✍️ Isi Jurnal"*, *"🖨️ Cetak Portofolio"*, *"👤 Masuk Akun Siswa"*, *"✏️ Edit"*, dan *"🗑️ Hapus"*.
+- **Impor & Ekspor CSV**: Ekspor roster siswa ke format CSV berstandar UTF-8 BOM, serta fitur impor berkas CSV untuk pembaruan data berkala.
+- **Pemulihan Master**: Tombol satu-klik untuk mengembalikan data ke Master Resmi 1.274 Siswa kapan saja.
 
 ### 7. Portal Validasi Guru & Wali Kelas
 - Ringkasan statistik verifikasi (Pending, Disetujui, Perlu Revisi).
@@ -105,17 +110,19 @@ d:\APLIKASI PERPUSTAKAAN\
 ├── README.md               # Dokumentasi panduan penggunaan
 │
 ├── assets/
+│   ├── data_siswa.csv      # Berkas CSV master 1.274 data siswa resmi SMAN 1 Batu
 │   ├── logo-sman1batu.png  # Logo resmi SMA Negeri 1 Batu (transparan)
 │   └── sman1batu-logo.svg  # Logo vektor resmi SMAN 1 Batu
 │
 ├── css/
-│   └── style.css           # Sistem desain modern, kartu kegiatan, glassmorphism & responsive
+│   └── style.css           # Sistem desain modern, kartu kegiatan, paginasi siswa & responsive
 │
 └── js/
     ├── firebase-config.js  # Layanan & konfigurasi sinkronisasi Firebase Realtime Database
-    ├── data.js             # Data master 36 kelas, profil sekolah, pengguna 3 role, agenda kegiatan & katalog buku
-    ├── storage.js          # Pengontrol LocalStorage, kalkulasi poin, registrasi kegiatan, migrasi & ekspor
-    ├── students.js         # Modul direktori 36 kelas siswa & roster
+    ├── students-data.js    # Basis data 1.274 siswa resmi 36 rombel SMAN 1 Batu
+    ├── data.js             # Data master 36 kelas, profil sekolah, pengguna 3 role & katalog buku
+    ├── storage.js          # Pengontrol LocalStorage, kalkulasi poin, registrasi & ekspor
+    ├── students.js         # Modul direktori 1.274 siswa (paginasi, filter JK, edit, switch akun)
     ├── activities.js       # Modul agenda kegiatan perpustakaan internal & eksternal
     ├── journal.js          # Modul formulir jurnal literasi siswa & verifikasi
     ├── library.js          # Modul katalog perpustakaan OPAC & peminjaman

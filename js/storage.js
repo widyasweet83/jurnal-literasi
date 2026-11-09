@@ -17,6 +17,16 @@ class AppStorage {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         let hasChanges = false;
+        const parsed = JSON.parse(stored);
+
+        // Migrasi otomatis data 1.274 siswa resmi jika di storage lama belum lengkap (< 1.200 siswa)
+        const currentStudentCount = (parsed.users || []).filter(u => u.role === "siswa").length;
+        if (currentStudentCount < 1200 && typeof MASTER_STUDENTS_1274 !== 'undefined' && MASTER_STUDENTS_1274.length > 0) {
+          const educators = (parsed.users || []).filter(u => u.role !== "siswa");
+          const officialStudents = JSON.parse(JSON.stringify(MASTER_STUDENTS_1274));
+          parsed.users = [...officialStudents, ...educators];
+          hasChanges = true;
+        }
 
         // Migrasi otomatis jika kelas 36 belum ada di storage lama
         if (!parsed.classes || parsed.classes.length < 36) {
@@ -191,6 +201,9 @@ class AppStorage {
     if (filter.class && filter.class !== "all") {
       list = list.filter(s => s.kelas === filter.class);
     }
+    if (filter.gender && filter.gender !== "all") {
+      list = list.filter(s => s.gender === filter.gender);
+    }
     if (filter.search) {
       const q = filter.search.toLowerCase();
       list = list.filter(s => 
@@ -254,6 +267,25 @@ class AppStorage {
     this.data.users = this.data.users.filter(u => u.id !== studentId);
     this.saveData();
     return true;
+  }
+
+  resetStudentsToOfficial() {
+    if (typeof MASTER_STUDENTS_1274 !== 'undefined' && MASTER_STUDENTS_1274.length > 0) {
+      const educators = this.data.users.filter(u => u.role !== "siswa");
+      const officialStudents = JSON.parse(JSON.stringify(MASTER_STUDENTS_1274));
+      this.data.users = [...officialStudents, ...educators];
+      this.saveData();
+      return true;
+    }
+    return false;
+  }
+
+  bulkImportStudents(studentsList) {
+    if (!Array.isArray(studentsList) || studentsList.length === 0) return 0;
+    const educators = this.data.users.filter(u => u.role !== "siswa");
+    this.data.users = [...studentsList, ...educators];
+    this.saveData();
+    return studentsList.length;
   }
 
   getClassStats(classId) {
@@ -556,12 +588,26 @@ class AppStorage {
   }
 
   getLeaderboard() {
+    const journalMap = {};
+    (this.data.journals || []).forEach(j => {
+      if (!journalMap[j.studentId]) journalMap[j.studentId] = { total: 0, approved: 0, totalPagesRead: 0 };
+      journalMap[j.studentId].total++;
+      if (j.status === "approved") {
+        journalMap[j.studentId].approved++;
+        journalMap[j.studentId].totalPagesRead += (Number(j.pagesRead) || 0);
+      }
+    });
+
     const students = this.data.users.filter(u => u.role === "siswa");
     return students.map(s => {
-      const stats = this.getStudentStats(s.id);
+      const jStats = journalMap[s.id] || { total: 0, approved: 0, totalPagesRead: 0 };
       return {
         ...s,
-        stats
+        stats: {
+          totalJournals: jStats.total,
+          approvedJournals: jStats.approved,
+          totalPagesRead: jStats.totalPagesRead || 0
+        }
       };
     }).sort((a, b) => (b.points || 0) - (a.points || 0));
   }

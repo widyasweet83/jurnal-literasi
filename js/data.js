@@ -43,225 +43,11 @@ for (let i = 1; i <= 12; i++) {
   });
 }
 
-// Inisialisasi Data Siswa Awal tersebar di berbagai kelas (36 kelas)
-const SAMPLE_STUDENTS = [
-  // Kelas XI
-  {
-    id: "siswa-1",
-    role: "siswa",
-    name: "Ahmad Fauzan Pratama",
-    nisn: "0078129841",
-    kelas: "XI-1",
-    grade: "XI",
-    gender: "L",
-    avatar: "👨‍🎓",
-    level: "Duta Literasi SMABA",
-    points: 480,
-    targetMonthlyBooks: 4,
-    targetDailyMinutes: 30,
-    waliKelas: "Drs. Wahyu Hidayat, M.Si",
-    bio: "Gemar membaca novel sejarah, sains populer, dan filsafat ringan."
-  },
-  {
-    id: "siswa-2",
-    role: "siswa",
-    name: "Siti Nur Aini",
-    nisn: "0078234120",
-    kelas: "XI-2",
-    grade: "XI",
-    gender: "P",
-    avatar: "👩‍🎓",
-    level: "Kutu Buku Aktif",
-    points: 320,
-    targetMonthlyBooks: 3,
-    targetDailyMinutes: 25,
-    waliKelas: "Ibu Widya Ningsih, S.Kom, Gr",
-    bio: "Menyukai sastra klasik Indonesia dan karya fiksi inspiratif."
-  },
-  {
-    id: "siswa-4",
-    role: "siswa",
-    name: "Dinda Ayu Larasati",
-    nisn: "0078345612",
-    kelas: "XI-3",
-    grade: "XI",
-    gender: "P",
-    avatar: "👩‍🎓",
-    level: "Kutu Buku Aktif",
-    points: 290,
-    waliKelas: "Wali Kelas XI-3 SMAN 1 Batu"
-  },
-  {
-    id: "siswa-5",
-    role: "siswa",
-    name: "Faris Alamsyah",
-    nisn: "0078456723",
-    kelas: "XI-4",
-    grade: "XI",
-    gender: "L",
-    avatar: "👨‍🎓",
-    level: "Pembaca Pemula",
-    points: 175,
-    waliKelas: "Wali Kelas XI-4 SMAN 1 Batu"
-  },
-
-  // Kelas X
-  {
-    id: "siswa-3",
-    role: "siswa",
-    name: "Bima Raditya Putra",
-    nisn: "0089123490",
-    kelas: "X-1",
-    grade: "X",
-    gender: "L",
-    avatar: "🧑‍🎓",
-    level: "Pembaca Pemula",
-    points: 140,
-    targetMonthlyBooks: 2,
-    targetDailyMinutes: 20,
-    waliKelas: "Wali Kelas X-1 SMAN 1 Batu",
-    bio: "Baru memulai kebiasaan membaca buku non-fiksi biografi."
-  },
-  {
-    id: "siswa-6",
-    role: "siswa",
-    name: "Nabila Zahra Kirana",
-    nisn: "0089234501",
-    kelas: "X-2",
-    grade: "X",
-    gender: "P",
-    avatar: "👩‍🎓",
-    level: "Kutu Buku Aktif",
-    points: 245,
-    waliKelas: "Wali Kelas X-2 SMAN 1 Batu"
-  },
-  {
-    id: "siswa-7",
-    role: "siswa",
-    name: "Rizky Aditya Pratama",
-    nisn: "0089345612",
-    kelas: "X-5",
-    grade: "X",
-    gender: "L",
-    avatar: "🧑‍🎓",
-    level: "Pembaca Pemula",
-    points: 110,
-    waliKelas: "Wali Kelas X-5 SMAN 1 Batu"
-  },
-  {
-    id: "siswa-8",
-    role: "siswa",
-    name: "Chelsea Olivia Putri",
-    nisn: "0089456723",
-    kelas: "X-10",
-    grade: "X",
-    gender: "P",
-    avatar: "👩‍🎓",
-    level: "Pembaca Pemula",
-    points: 95,
-    waliKelas: "Wali Kelas X-10 SMAN 1 Batu"
-  },
-
-  // Kelas XII
-  {
-    id: "siswa-9",
-    role: "siswa",
-    name: "Muhammad Raihan Akbar",
-    nisn: "0067123890",
-    kelas: "XII-1",
-    grade: "XII",
-    gender: "L",
-    avatar: "👨‍🎓",
-    level: "Duta Literasi SMABA",
-    points: 520,
-    waliKelas: "Wali Kelas XII-1 SMAN 1 Batu"
-  },
-  {
-    id: "siswa-10",
-    role: "siswa",
-    name: "Gita Safitri",
-    nisn: "0067234901",
-    kelas: "XII-3",
-    grade: "XII",
-    gender: "P",
-    avatar: "👩‍🎓",
-    level: "Master Resensi",
-    points: 390,
-    waliKelas: "Wali Kelas XII-3 SMAN 1 Batu"
-  },
-  {
-    id: "siswa-11",
-    role: "siswa",
-    name: "Kevin Jonathan",
-    nisn: "0067345012",
-    kelas: "XII-7",
-    grade: "XII",
-    gender: "L",
-    avatar: "👨‍🎓",
-    level: "Kutu Buku Aktif",
-    points: 260,
-    waliKelas: "Wali Kelas XII-7 SMAN 1 Batu"
-  },
-  {
-    id: "siswa-12",
-    role: "siswa",
-    name: "Anindya Maheswari",
-    nisn: "0067456123",
-    kelas: "XII-12",
-    grade: "XII",
-    gender: "P",
-    avatar: "👩‍🎓",
-    level: "Master Resensi",
-    points: 410,
-    waliKelas: "Wali Kelas XII-12 SMAN 1 Batu"
-  }
-];
-
-// Tambahan siswa representatif untuk kelas lainnya agar 36 kelas memiliki data awal
-const INDONESIAN_NAMES = [
-  "Aditya Pratama", "Bayu Saputra", "Cahya Permana", "Dimas Anggara", "Eko Wahyudi",
-  "Fahmi Nugraha", "Gilang Ramadhan", "Hendra Wijaya", "Irfan Hakim", "Joko Susilo",
-  "Kuncoro Jati", "Luki Hermawan", "Maulana Malik", "Nanda Pratama", "Oki Setiawan",
-  "Pandu Wicaksono", "Qori Alamsyah", "Rian Hidayat", "Surya Saputra", "Teguh Prasetyo",
-  "Annisa Rahma", "Bunga Citra", "Citra Dewi", "Dewi Sartika", "Erna Wulandari",
-  "Fitri Handayani", "Gita Gutawa", "Hani Melati", "Indah Permata", "Jasmine Putri",
-  "Kartika Sari", "Lestari Anggraini", "Maya Kusuma", "Nadya Utami", "Putri Maharani"
-];
-
-// Pastikan setiap kelas memiliki minimal 1-2 siswa terdaftar
-CLASSES_36.forEach((cls, idx) => {
-  const existing = SAMPLE_STUDENTS.find(s => s.kelas === cls.id);
-  if (!existing) {
-    const isMale = idx % 2 === 0;
-    const name = INDONESIAN_NAMES[idx % INDONESIAN_NAMES.length];
-    const nisnPrefix = cls.grade === "X" ? "0089" : (cls.grade === "XI" ? "0078" : "0067");
-    const numStr = String(idx + 10).padStart(3, "0");
-    const nisn = `${nisnPrefix}${numStr}${Math.floor(100 + Math.random() * 900)}`;
-    const pts = Math.floor(60 + Math.random() * 250);
-
-    let level = "Pembaca Pemula";
-    if (pts >= 450) level = "Duta Literasi SMABA";
-    else if (pts >= 350) level = "Master Resensi";
-    else if (pts >= 200) level = "Kutu Buku Aktif";
-
-    SAMPLE_STUDENTS.push({
-      id: `siswa-${cls.id.toLowerCase()}`,
-      role: "siswa",
-      name: `${name} (${cls.id})`,
-      nisn: nisn,
-      kelas: cls.id,
-      grade: cls.grade,
-      gender: isMale ? "L" : "P",
-      avatar: isMale ? "👨‍🎓" : "👩‍🎓",
-      level: level,
-      points: pts,
-      targetMonthlyBooks: 3,
-      targetDailyMinutes: 20,
-      waliKelas: cls.waliKelas,
-      bio: `Siswa aktif pembiasaan literasi ${cls.name} SMAN 1 Batu.`
-    });
-  }
-});
+// Inisialisasi Data Resmi 1.274 Siswa SMAN 1 Batu (36 Rombel)
+// 12 Kelas X, 12 Kelas XI, 12 Kelas XII
+const SAMPLE_STUDENTS = (typeof MASTER_STUDENTS_1274 !== 'undefined' && Array.isArray(MASTER_STUDENTS_1274) && MASTER_STUDENTS_1274.length > 0)
+  ? MASTER_STUDENTS_1274
+  : [];
 
 const INITIAL_DATA = {
   school: {
@@ -467,9 +253,9 @@ const INITIAL_DATA = {
     {
       id: "jrn-1",
       studentId: "siswa-1",
-      studentName: "Ahmad Fauzan Pratama",
-      studentClass: "XI-1",
-      studentNisn: "0078129841",
+      studentName: "Ailin Chaya Agatha",
+      studentClass: "X-1",
+      studentNisn: "0107558631",
       bookId: "buku-3",
       bookTitle: "Filosofi Teras",
       bookAuthor: "Henry Manampiring",
@@ -483,16 +269,16 @@ const INITIAL_DATA = {
       moralValue: "Belajar untuk tidak membuang energi memikirkan hal yang tak bisa dikendalikan. Fokus 100% pada persiapan belajar dan etika pribadi daripada mencemaskan ekspektasi orang lain.",
       favoriteQuote: "Bukan hal-hal di luar diri kita yang membuat kita resah, melainkan penilaian kita sendiri terhadap hal-hal tersebut.",
       teacherScore: 95,
-      teacherFeedback: "Ulasan yang sangat analitis dan mendalam, Fauzan! Penerapan dikotomi kendali untuk menghadapi ujian sangat relevan. Terus pertahankan budaya berpikir kritis ini.",
+      teacherFeedback: "Ulasan yang sangat analitis dan mendalam, Ailin! Penerapan dikotomi kendali untuk menghadapi ujian sangat relevan. Terus pertahankan budaya berpikir kritis ini.",
       teacherName: "Ibu Widya Ningsih, S.Kom, Gr",
       verifiedAt: "2026-10-18 09:30"
     },
     {
       id: "jrn-2",
       studentId: "siswa-1",
-      studentName: "Ahmad Fauzan Pratama",
-      studentClass: "XI-1",
-      studentNisn: "0078129841",
+      studentName: "Ailin Chaya Agatha",
+      studentClass: "X-1",
+      studentNisn: "0107558631",
       bookId: "buku-1",
       bookTitle: "Laskar Pelangi",
       bookAuthor: "Andrea Hirata",
@@ -512,10 +298,10 @@ const INITIAL_DATA = {
     },
     {
       id: "jrn-3",
-      studentId: "siswa-2",
-      studentName: "Siti Nur Aini",
-      studentClass: "XI-2",
-      studentNisn: "0078234120",
+      studentId: "siswa-428",
+      studentName: "Adelia Cahyani",
+      studentClass: "XI-1",
+      studentNisn: "0109898696",
       bookId: "buku-4",
       bookTitle: "Laut Bercerita",
       bookAuthor: "Leila S. Chudori",
@@ -529,16 +315,16 @@ const INITIAL_DATA = {
       moralValue: "Keberanian menyuarakan kebenaran dan empati mendalam terhadap kaum tertindas adalah esensi kemanusiaan sejati.",
       favoriteQuote: "Matilah dengan terhormat, atau hiduplah dengan memegang teguh martabatmu.",
       teacherScore: 92,
-      teacherFeedback: "Analisis karakter dan latar sejarah yang apik Siti. Pilihan diksi ulasanmu sangat rapi.",
+      teacherFeedback: "Analisis karakter dan latar sejarah yang apik Adelia. Pilihan diksi ulasanmu sangat rapi.",
       teacherName: "Ibu Widya Ningsih, S.Kom, Gr",
       verifiedAt: "2026-10-17 14:15"
     },
     {
       id: "jrn-4",
-      studentId: "siswa-3",
-      studentName: "Bima Raditya Putra",
+      studentId: "siswa-4",
+      studentName: "Arva Prawira Putra",
       studentClass: "X-1",
-      studentNisn: "0089123490",
+      studentNisn: "0102572268",
       bookId: "buku-6",
       bookTitle: "Atomic Habits",
       bookAuthor: "James Clear (Terj.)",
@@ -552,16 +338,16 @@ const INITIAL_DATA = {
       moralValue: "Bisa bangun pagi tepat waktu.",
       favoriteQuote: "Disiplin itu penting.",
       teacherScore: 68,
-      teacherFeedback: "Halo Bima, ringkasanmu masih terlalu singkat. Tolong uraikan hukum 4 langkah perubahan perilaku (Cue, Craving, Response, Reward) yang ada di bab tersebut agar ulasanmu lebih berbobot ya!",
+      teacherFeedback: "Halo Arva, ringkasanmu masih terlalu singkat. Tolong uraikan hukum 4 langkah perubahan perilaku (Cue, Craving, Response, Reward) yang ada di bab tersebut agar ulasanmu lebih berbobot ya!",
       teacherName: "Ibu Widya Ningsih, S.Kom, Gr",
       verifiedAt: "2026-10-18 16:20"
     },
     {
       id: "jrn-5",
-      studentId: "siswa-9",
-      studentName: "Muhammad Raihan Akbar",
+      studentId: "siswa-851",
+      studentName: "Aden Qushai Assyidiq",
       studentClass: "XII-1",
-      studentNisn: "0067123890",
+      studentNisn: "0088003544",
       bookId: "buku-2",
       bookTitle: "Bumi Manusia",
       bookAuthor: "Pramoedya Ananta Toer",
@@ -585,7 +371,7 @@ const INITIAL_DATA = {
     {
       id: "brw-1",
       studentId: "siswa-1",
-      studentName: "Ahmad Fauzan Pratama",
+      studentName: "Ailin Chaya Agatha",
       bookId: "buku-3",
       bookTitle: "Filosofi Teras",
       borrowDate: "2026-10-12",
@@ -595,8 +381,8 @@ const INITIAL_DATA = {
     },
     {
       id: "brw-2",
-      studentId: "siswa-2",
-      studentName: "Siti Nur Aini",
+      studentId: "siswa-428",
+      studentName: "Adelia Cahyani",
       bookId: "buku-4",
       bookTitle: "Laut Bercerita",
       borrowDate: "2026-10-10",
@@ -607,7 +393,7 @@ const INITIAL_DATA = {
     {
       id: "brw-3",
       studentId: "siswa-1",
-      studentName: "Ahmad Fauzan Pratama",
+      studentName: "Ailin Chaya Agatha",
       bookId: "buku-5",
       bookTitle: "Negeri 5 Menara",
       borrowDate: "2026-09-20",
